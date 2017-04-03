@@ -1,0 +1,22 @@
+You've learned a lot about web development so far. I want you to take a moment to write down your thoughts about web development here. Answer the following questions:
+  * What new skills have you learned?
+  * What has been easy?
+  * What has been difficult?
+  * How have you used the problem solving strategies from the first project to overcome challenges so far?
+
+---
+
+Your response goes here!
+
+# What new skills have you learned?
+	* I learned how to structure the HTML document and how it can be represented in a tree structure;
+	* I learned that it is important to think about the elements I use in the HTML to be semantically correct. It is important for both its maintenance and accessibility;
+	
+# What has been easy?
+	Since I knew a bit about HTML, it was easy to create HTML structure request in the exercices;
+	
+# What has been difficult?
+	It seems like there are a lot of elements that have a specific purpose, and it seems difficult to learn all of them. But I guess that practice will simplify it.
+	
+# How have you used the problem solving strategies from the first project to overcome challenges so far?
+	By knowing that I can't learn all at once. And that even if it seems a lot to remember, practice will make it easier.
