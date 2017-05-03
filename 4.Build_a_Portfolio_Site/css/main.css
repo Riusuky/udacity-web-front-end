@@ -29,8 +29,7 @@ a {
 
 
 /* Header */
-/* I kept the "header." here because it seemed more organized this way. */
-header.container {
+.header.container {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -46,16 +45,16 @@ header.container {
   border-bottom-width: 3px;
 }
 
-header .logo {
+.header .logo {
   width: 45px;
   -webkit-box-ordinal-group: 2;
       -ms-flex-order: 1;
           order: 1;
 }
 
-header .description {
+.header .description {
   text-align: right;
-  margin: 0 0 10px 0;
+  margin: 0 10px 0 0;
   -webkit-box-flex: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
@@ -64,21 +63,21 @@ header .description {
           order: 2;
 }
 
-header .description h1,
-header .description h3 {
+.header .description h1,
+.header .description h3 {
   margin: 0;
 }
 
-header .description h1 {
+.header .description h1 {
   font-size: 1.7em;
   font-weight: normal;
 }
 
-header .description h3 {
+.header .description h3 {
   font-size: 0.95em;
 }
 
-header .avatar {
+.header .avatar {
   width: 50px;
   -webkit-box-ordinal-group: 4;
       -ms-flex-order: 3;
@@ -119,23 +118,23 @@ header .avatar {
   font-size: 1.1em;
 }
 
-#mindset.sub-container {
+.mindset.sub-container {
   grid-area: mindset;
 }
 
-#mockup.sub-container {
+.mockup.sub-container {
   grid-area: mockup;
 }
 
-#cards.sub-container {
+.cards.sub-container {
   grid-area: cards;
 }
 
 
 /* Media Queries */
 @media screen and (max-width: 535px) {
-  header .avatar {
-    display: none;
+  .header .avatar {
+    width: 45px;
   }
 
   .featured-work.container {
@@ -183,7 +182,7 @@ header .avatar {
     font-size: 1.3em;
   }
 
-  #mindset {
+  .mindset {
     background-image: url(../img/brain-medium.jpg);
     background-image:
       -webkit-image-set(
@@ -199,51 +198,62 @@ header .avatar {
     background-size: 55%;
   }
 
-  #mindset p {
+  .mindset p {
     text-shadow: white 2px 1px;
   }
 
-  #mockup {
+  .mockup {
     background-image: url(../img/mockup.gif);
     background-size: 70%;
     background-position: -50px center;
   }
 
-  #mockup p {
+  .mockup p {
     text-shadow: white 2px 1px;
   }
 
-  #cards {
+  .cards {
     background-image: linear-gradient(to right, transparent, transparent 240px, white 280px, white),
                       url(../img/rhinoceros-beetle.jpg);
     background-position: left;
   }
 
-  #cards p {
+  .cards p {
     color: white;
     text-shadow: #2d3c49 2px 1px;
   }
 }
 
+@media screen and (max-width: 410px) {
+  .header .logo,
+  .header .avatar {
+    width: 40px;
+  }
+
+  .header .description h1 {
+    font-size: 1.5em;
+  }
+}
+
 @media screen and (min-width: 536px) {
-  header.container {
+  .header.container {
     padding: 10px 6px;
     border-bottom-width: 5px;
   }
 
-  header .description {
+  .header .description {
     margin: 0 18px;
   }
 
-  header .logo {
+  .header .logo {
     width: 57px;
   }
 
-  header .description h1 {
+  .header .description h1 {
     font-size: 2em;
   }
 
-  header .description h3 {
+  .header .description h3 {
     font-size: 1.1em;
   }
 
@@ -262,7 +272,7 @@ header .avatar {
     height: 2.2em;
   }
 
-  #mindset figure {
+  .mindset figure {
     background-image: url(../img/brain-large.jpg);
     background-image:
       -webkit-image-set(
@@ -279,12 +289,12 @@ header .avatar {
     background-position: 50% 50%;
   }
 
-  #mockup figure {
+  .mockup figure {
     background-image: url(../img/mockup.gif);
     background-position: 52%;
   }
 
-  #cards figure {
+  .cards figure {
     background-image: url(../img/rhinoceros-beetle.jpg);
   }
 }
@@ -301,23 +311,23 @@ header .avatar {
 }
 
 @media screen and (min-width: 756px) {
-  header.container {
+  .header.container {
     padding: 20px 10px;
   }
 
-  header .logo {
+  .header .logo {
     width: 67px;
   }
 
-  header .avatar {
+  .header .avatar {
     width: 60px;
   }
 
-  header .description h1 {
+  .header .description h1 {
     font-size: 2.5em;
   }
 
-  header .description h3 {
+  .header .description h3 {
     font-size: 1.17em;
   }
 }
