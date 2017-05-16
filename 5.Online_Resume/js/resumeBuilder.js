@@ -136,7 +136,10 @@ var bio = {
     display: function() {
         $('.owner-name').text(this.name);
         $('.owner-role').text(this.role);
-        $('.owner-photo').attr('src', this.biopic);
+
+        var photoContainer = $('.owner-photo');
+        photoContainer.attr('src', this.biopic);
+        photoContainer.show();
 
         $('.owner-welcome').text(this.welcomeMessage);
 
