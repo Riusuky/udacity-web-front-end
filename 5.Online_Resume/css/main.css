@@ -57,7 +57,8 @@ div,
 p,
 figure,
 address,
-img {
+img,
+main {
   box-sizing: border-box;
 }
 
