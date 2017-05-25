@@ -105,19 +105,17 @@ var gameController = (function() {
         if(player.getBoxColliderBorder().bottom < object.waterRowPositions[object.waterRowPositions.length-1] + object.tileSize[1]) {
             object.gameLevel++;
 
-            object.updateScore();
-
-            object.adjustMapSize();
-
-            player.reset();
-
-            enemyController.reset();
+            object.refresh();
         }
     }
 
     object.reset = function() {
         object.gameLevel = 1;
 
+        object.refresh();
+    }
+
+    object.refresh = function() {
         object.updateScore();
 
         object.adjustMapSize();
@@ -125,6 +123,8 @@ var gameController = (function() {
         player.reset();
 
         enemyController.reset();
+
+        rockController.reset();
     }
 
     var currentScore = $('.current .value');
@@ -169,6 +169,8 @@ var GameObject = function(sprite) {
     // Box colider
     this.boxColliderSize = [0, 0];
     this.boxColliderPositionOffset = [0, 0];
+    // scale
+    this.scale = 1;
 
     this.active = true;
 };
@@ -182,18 +184,19 @@ GameObject.prototype.update = function(dt) {
 // Draw the object on the screen, required method for game
 GameObject.prototype.render = function() {
     if(this.active) {
-        // ctx.strokeRect(this.x + this.boxColliderPositionOffset[0], this.y + this.boxColliderPositionOffset[1] + gameController.verticalConstantFix, this.boxColliderSize[0], this.boxColliderSize[1]);
-        ctx.drawImage(Resources.get(this.sprite), this.x, this.y + gameController.verticalConstantFix, gameController.imageSize[0], gameController.imageSize[1]);
+        // var myBorders = this.getBoxColliderBorder();
+        // ctx.strokeRect(myBorders.left, myBorders.top, myBorders.right - myBorders.left, myBorders.bottom - myBorders.top);
+        ctx.drawImage(Resources.get(this.sprite), this.x, this.y + gameController.verticalConstantFix, gameController.imageSize[0]*this.scale, gameController.imageSize[1]*this.scale);
     }
 };
 
 // Returns the box collider borders
 GameObject.prototype.getBoxColliderBorder = function() {
     return {
-        top: this.y + this.boxColliderPositionOffset[1] + gameController.verticalConstantFix,
-        right: this.x + this.boxColliderPositionOffset[0] + this.boxColliderSize[0],
-        bottom: this.y + this.boxColliderPositionOffset[1] + this.boxColliderSize[1] + gameController.verticalConstantFix,
-        left: this.x + this.boxColliderPositionOffset[0]
+        top: this.y + this.boxColliderPositionOffset[1]*this.scale + gameController.verticalConstantFix,
+        right: this.x + (this.boxColliderPositionOffset[0] + this.boxColliderSize[0])*this.scale,
+        bottom: this.y + (this.boxColliderPositionOffset[1] + this.boxColliderSize[1])*this.scale + gameController.verticalConstantFix,
+        left: this.x + this.boxColliderPositionOffset[0]*this.scale
     };
 };
 
@@ -226,7 +229,7 @@ Enemy.prototype.reset = function() {
 
     var speedReference = gameController.tileSize[0];
 
-    this.vx = speedReference*(1+ 0.05*gameController.gameLevel) + (Math.floor(Math.random()*speedReference*(0.8 + 0.1*gameController.gameLevel)) + 1);
+    this.vx = speedReference*(1+ 0.06*(gameController.gameLevel-1)) + Math.random()*speedReference*(0.8 + 0.15*gameController.gameLevel);
 
 
     this.boxColliderSize = [gameController.imageSize[0]*0.9, gameController.imageSize[1]*0.35];
@@ -239,6 +242,11 @@ Enemy.prototype.reset = function() {
 Enemy.prototype.update = function(dt) {
     GameObject.prototype.update.call(this, dt);
 
+    this.checkCollision();
+};
+
+// Checks enemies Collision
+Enemy.prototype.checkCollision = function() {
     if(this.hasCollided(player.getBoxColliderBorder())) {
         player.kill();
     }
@@ -254,7 +262,7 @@ Enemy.prototype.update = function(dt) {
             this.vx = otherEnemy.vx;
         }
     }
-};
+}
 
 // Controllable character
 var Player = function() {
@@ -296,10 +304,50 @@ Player.prototype.kill = function() {
     gameController.reset();
 };
 
+// Adjust movement step for a given target (block movement)
+Player.prototype.checkMovement = function(step, target) {
+    var futureBorder = null;
+
+    // Horizontal check
+    if(step[0] !== 0) {
+        futureBorder = this.getBoxColliderBorder();
+        futureBorder.left += step[0];
+        futureBorder.right += step[0];
+
+        if(target.hasCollided(futureBorder)) {
+            if(step[0] > 0) {
+                step[0] += target.getBoxColliderBorder().left - futureBorder.right - 1;
+            }
+            else {
+                step[0] += target.getBoxColliderBorder().right - futureBorder.left + 1;
+            }
+
+            // If there is a collision on x, then we can suppose that there is not a collision on y. If it hits the corner of the box, then it will continue its movement on the y axis
+            return step;
+        }
+    }
+
+    // Vertical check
+    if(step[1] !== 0) {
+        futureBorder = this.getBoxColliderBorder();
+        futureBorder.top += step[1];
+        futureBorder.bottom += step[1];
+
+        if(target.hasCollided(futureBorder)) {
+            if(step[1] > 0) {
+                step[1] += target.getBoxColliderBorder().top - futureBorder.bottom - 1;
+            }
+            else {
+                step[1] += target.getBoxColliderBorder().bottom - futureBorder.top + 1;
+            }
+        }
+    }
+
+    return step;
+};
+
 // Updates player and check for position limits
 Player.prototype.update = function(dt) {
-    GameObject.prototype.update.call(this, dt);
-
     // Stops when arriving at target destination.
     if(this.lastClickPosition) {
         var myCenter = this.getCenter();
@@ -318,8 +366,21 @@ Player.prototype.update = function(dt) {
         // }
     }
 
+    var step = [this.vx*dt, this.vy*dt];
+
+    var me = this;
+
+    // Blocks the player from entering a rock tile
+    rockController.rocks.forEach(function(rock) {
+        step = me.checkMovement(step, rock);
+    });
+
+    this.x += step[0];
+    this.y += step[1];
+
     var myBorders = this.getBoxColliderBorder();
 
+    // Blocks player from leaving the game windows
     if(myBorders.left < gameController.gameWindow.left) {
         this.x += gameController.gameWindow.left - myBorders.left;
     }
@@ -414,7 +475,6 @@ TimeEvent.prototype.update = function(dt) {
 
     if(this.timer < 0) {
         this.timer = this.eventPeriod;
-
         if(this.successRate - Math.random() > 0) {
             this.successCallback();
         }
@@ -432,9 +492,6 @@ EnemyController.prototype = Object.create(TimeEvent.prototype);
 EnemyController.prototype.contructor = EnemyController;
 
 EnemyController.prototype.update = function(dt) {
-    this.successRate = 0.01*gameController.gameLevel;
-    this.period = 0.5 - 0.1*gameController.gameLevel;
-
     var newActiveArray = [];
     var newInactiveArray = [];
 
@@ -456,6 +513,12 @@ EnemyController.prototype.update = function(dt) {
     }
 }
 
+EnemyController.prototype.render = function() {
+    this.activeEnemies.forEach(function (enemy) {
+        enemy.render();
+    });
+}
+
 // Instatiates a new enemy
 EnemyController.prototype.spawnEnemy = function() {
     if(this.inactiveEnemies.length > 0) {
@@ -472,6 +535,9 @@ EnemyController.prototype.spawnEnemy = function() {
 EnemyController.prototype.reset = function() {
     this.timer = 0;
 
+    this.successRate = Math.min(0.3 + 0.022*gameController.gameLevel, 0.9) ;
+    this.eventPeriod = Math.max(0.4 - 0.02*(gameController.gameLevel-1), 0.04);
+
     while(this.activeEnemies.length > 0) {
         var enemy = this.activeEnemies.pop();
         enemy.active = false;
@@ -479,9 +545,55 @@ EnemyController.prototype.reset = function() {
     }
 
     // the higher the level, the more enemies there will be
-    for(var i=0 ; i<Math.min(gameController.gameLevel, 10); i++) {
-        this.activeEnemies.push(new Enemy());
+    for(var i=0 ; i<Math.min(gameController.gameLevel, 18); i++) {
+        var newEnemy = new Enemy();
+        newEnemy.x = (Math.floor(Math.random() * gameController.columnPositions.length) - 1) * gameController.tileSize[0];
+        this.activeEnemies.push(newEnemy);
     }
+}
+
+// This object will block a water tile
+var Rock = function(columnIndex) {
+    GameObject.call(this, 'images/Rock.png');
+
+    this.scale = 0.9;
+
+    this.index = columnIndex;
+
+    this.y = gameController.waterRowPositions[gameController.waterRowPositions.length-1] + (1-this.scale)*gameController.imageSize[1];
+    this.x = gameController.columnPositions[columnIndex] + (1-this.scale)*gameController.imageSize[0]/2;
+
+    this.boxColliderSize = [gameController.imageSize[0]*0.9, gameController.imageSize[1]*0.52];
+    this.boxColliderPositionOffset = [(gameController.imageSize[0] - this.boxColliderSize[0])/2, gameController.imageSize[1]*0.38];
+}
+Rock.prototype = Object.create(GameObject.prototype);
+Rock.prototype.contructor = RockController;
+
+var RockController = function() {
+    this.rocks = [];
+
+    this.reset();
+}
+
+// Generates rocks
+RockController.prototype.reset = function() {
+    this.rocks = [];
+
+    if(gameController.gameLevel >= 5) {
+        while(this.rocks.length < Math.min(gameController.gameLevel - 4, gameController.columnPositions.length-2)) {
+            var newIndex = Math.floor(Math.random()*gameController.columnPositions.length);
+
+            if(this.rocks.every(function(rock) { return rock.index != newIndex; })) {
+                this.rocks.push(new Rock(newIndex));
+            }
+        }
+    }
+}
+
+RockController.prototype.render = function() {
+    this.rocks.forEach(function(rock) {
+        rock.render();
+    });
 }
 
 
@@ -489,6 +601,12 @@ EnemyController.prototype.reset = function() {
 var player = new Player();
 
 var enemyController = new EnemyController();
+
+var rockController = new RockController();
+
+enemyController.activeEnemies.forEach(function(enemy) {
+    enemy.checkCollision();
+});
 
 
 // --------------------------------------------------------------** Event subscriptions

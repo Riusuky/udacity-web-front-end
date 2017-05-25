@@ -1,10 +1,11 @@
 body {
     box-sizing: border-box;
     margin: 0;
-    padding: 50px;
+    padding: 5px;
     width: 100vw;
     height: 100vh;
     background-color: #cdcca6;
+    overflow: hidden;
 }
 
 h3 {
@@ -21,11 +22,16 @@ main {
 
 .game-container {
     height: 100%;
-    width: calc((100vh - 100px)*0.82);
+    width: calc((100vh - 10px)*0.82);
+    order: 1;
+    cursor: pointer;
 }
 
 .score-container {
     padding: 0 15px;
+    order: 2;
+    cursor: default;
+    user-select: none;
 }
 
 .current,
@@ -50,14 +56,59 @@ main {
     margin: 0 0 0 30px;
 }
 
-/*main {
-    height: 100%;
-    width: calc((100vh - 30px)*0.82);
+@media screen and (max-aspect-ratio: 6/5) {
+    main {
+        flex-flow: column nowrap;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .game-container {
+        height: calc(100vh - 10px - 94px);
+        width: calc((100vh - 10px - 94px)*0.82);
+        order: 2;
+    }
+
+    .score-container {
+        order: 1;
+        margin: 0 0 15px;
+    }
+
+    .current,
+    .max {
+        width: 300px;
+    }
 }
 
-@media screen and (orientation: portrait) {
-    main {
-        height: calc((100vw - 30px)*1.22);
+
+@media screen and (min-width: 1250px) and (orientation: landscape) {
+    body {
+        padding: 50px;
+    }
+
+    .game-container {
+        width: calc((100vh - 100px)*0.82);
+    }
+
+}
+
+@media screen and (max-aspect-ratio: 4/5) {
+    .game-container {
+        height: calc((100vw - 10px)/0.82);
         width: 100%;
     }
-}*/
+}
+
+@media screen and (max-width: 600px) {
+    .current,
+    .max {
+        font-size: 1em;
+    }
+}
+
+@media screen  and (max-width: 350px) {
+    .current,
+    .max {
+        width: 280px;
+    }
+}
