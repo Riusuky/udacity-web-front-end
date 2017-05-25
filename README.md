@@ -1,4 +1,4 @@
-# Udacity Web Front End
+# Udacity Web Front End (Still in progress!)
 
 This repository is meant to show all of my Udacity's Web Front End Nanodegree project submissions. All of its content can be viewed [here](https://riusuky.github.io/udacity-web-front-end/).
 
