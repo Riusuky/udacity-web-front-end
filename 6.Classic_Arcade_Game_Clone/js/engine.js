@@ -15,10 +15,6 @@
  */
 
 var Engine = (function(global) {
-    /* Predefine the variables we'll be using within this scope,
-     * create the canvas element, grab the 2D context for that canvas
-     * set the canvas elements height/width and add it to the DOM.
-     */
     var win = global.window,
         lastTime;
 
@@ -59,6 +55,33 @@ var Engine = (function(global) {
     function init() {
         reset();
         lastTime = Date.now();
+        
+        var backgroundAudio = Resources.getAudio('sounds/background.mp3');
+        backgroundAudio.loop = true;
+        backgroundAudio.play();
+
+        $('.music-button').click(function() {
+            if(backgroundAudio.paused) {
+                $(this).toggleClass('fa-volume-up', true);
+                $(this).toggleClass('fa-volume-off', false);
+                backgroundAudio.play();
+
+                gameController.audioOn = true;
+
+                enemyController.sound(true);
+            }
+            else {
+                $(this).toggleClass('fa-volume-up', false);
+                $(this).toggleClass('fa-volume-off', true);
+                backgroundAudio.pause();
+                backgroundAudio.currentTime = 0;
+
+                gameController.audioOn = false;
+
+                enemyController.sound(false);
+            }
+        });
+
         main();
     }
 
@@ -128,14 +151,18 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
+        console.log('reset!');
+        gameController.reset();
     }
 
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when
      * all of these images are properly loaded our game will start.
      */
-    Resources.load([
+
+    Resources.onReady(init);
+
+    Resources.loadImage([
         'images/stone-block.png',
         'images/water-block.png',
         'images/grass-block.png',
@@ -143,5 +170,12 @@ var Engine = (function(global) {
         'images/char-boy.png',
         'images/Rock.png'
     ]);
-    Resources.onReady(init);
+
+    Resources.loadAudio([
+        'sounds/background.mp3',
+        'sounds/bug.mp3',
+        'sounds/death.wav',
+        'sounds/footsteps.wav',
+        'sounds/win.wav'
+    ]);
 })(this);

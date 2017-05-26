@@ -20,6 +20,14 @@ main {
     justify-content: center;
 }
 
+.music-button {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 20px;
+    opacity: 0.6;
+}
+
 .game-container {
     height: 100%;
     width: calc((100vh - 10px)*0.82);

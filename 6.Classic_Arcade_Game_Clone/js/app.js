@@ -1,13 +1,16 @@
 // --------------------------------------------------------------** Game controller Class
+// It holds some main game properties and will controll some major aspects of the game
 var gameController = (function() {
     var object = {};
 
     object.gameLevel = 1;
     object.playerScore = 0;
 
+    object.audioOn = true;
+
     object.speed = 1;
 
-    //Removed the canvas creation from engine.js
+    // Adds canvas to the page
     var doc = document,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
@@ -15,9 +18,6 @@ var gameController = (function() {
 
     canvas.width = container.innerWidth();
     canvas.height = container.innerHeight();
-
-    // nvas.width = 505;
-    // canvas.height = 606;
 
     container.prepend(canvas);
 
@@ -30,7 +30,7 @@ var gameController = (function() {
     var tileAspectRatio = 101 / 83; //83 , 133 , 171
     var imageAspectRatio = 101 / 171;
 
-    // Calculates tile sizes and row positions
+    // Calculates tile sizes and row positions and stores them in variables for other game objects
     object.adjustMapSize = function() {
         var numberOfWaterRows = 1;
         var numberOfStoneRows = Math.min(2 + object.gameLevel, 15);
@@ -44,7 +44,7 @@ var gameController = (function() {
         object.tileSize = [rowWidth, rowHeight];
         object.imageSize = [rowWidth, rowWidth / imageAspectRatio];
 
-        // This will adjust the vertical position of objects.
+        // This will adjust the vertical position of objects. (this was empirically calculated based on the current size of images)
         object.verticalConstantFix = object.tileSize[1] - object.imageSize[1] + 15*(object.imageSize[1] / 171);
 
         object.waterRowPositions = [];
@@ -53,6 +53,7 @@ var gameController = (function() {
 
         object.columnPositions = [];
 
+        // Calculates horizontal offset so that the game is centered on the canvas.
         var totalNumberOfColumns = Math.floor(canvas.width / object.tileSize[0]);
         var horizontalOffset = (canvas.width % object.tileSize[0]) / 2;
 
@@ -78,11 +79,12 @@ var gameController = (function() {
         FillRowPositions(numberOfWaterRows+numberOfStoneRows, numberOfWaterRows+numberOfStoneRows+numberOfGrassRows, 'grassRowPositions');
     };
 
+    // Draws the game terrain
     object.render = function() {
         function GetDrawFunction(sprite) {
             return function(rowPosition) {
                 object.columnPositions.forEach(function(columnPosition) {
-                    ctx.drawImage(Resources.get(sprite), columnPosition, rowPosition - 50 * (object.tileSize[1] / 83), object.imageSize[0], object.imageSize[1]);
+                    ctx.drawImage(Resources.getImage(sprite), columnPosition, rowPosition - 50 * (object.tileSize[1] / 83), object.imageSize[0], object.imageSize[1]);
                 });
             };
         }
@@ -92,6 +94,7 @@ var gameController = (function() {
         object.grassRowPositions.forEach(GetDrawFunction(grassSprite));
     };
 
+    // Fills the transparent canvas areas so that no game character will float out of the game terrain
     object.postRender = function() {
         ctx.fillStyle = '#cdcca6';
         ctx.fillRect(0, 0, object.gameWindow.left, canvas.height);
@@ -101,20 +104,32 @@ var gameController = (function() {
 
     object.adjustMapSize();
 
+    // Checks if the player has win the current level
     object.update = function() {
         if(player.getBoxColliderBorder().bottom < object.waterRowPositions[object.waterRowPositions.length-1] + object.tileSize[1]) {
             object.gameLevel++;
 
+            if(gameController.audioOn) {
+                var stepAudio = Resources.getAudio('sounds/win.wav');
+                stepAudio.volume = 0.6;
+                stepAudio.playbackRate = 2;
+                stepAudio.pause();
+                stepAudio.currentTime = 0;
+                stepAudio.play();
+            }
+
             object.refresh();
         }
-    }
+    };
 
+    // Resets the game
     object.reset = function() {
         object.gameLevel = 1;
 
         object.refresh();
-    }
+    };
 
+    // Refreshes game objects to given game level
     object.refresh = function() {
         object.updateScore();
 
@@ -125,7 +140,7 @@ var gameController = (function() {
         enemyController.reset();
 
         rockController.reset();
-    }
+    };
 
     var currentScore = $('.current .value');
     var maxScore = $('.max .value');
@@ -136,12 +151,14 @@ var gameController = (function() {
         maxScore.text(localStorage[cacheEntryName]);
     }
 
+    // Update game level texts and caches it
     object.updateScore = function() {
         currentScore.text(object.gameLevel);
         maxScore.text(Math.max(parseInt(maxScore.text()), object.gameLevel));
         localStorage[cacheEntryName] = maxScore.text();
-    }
+    };
 
+    // If user changes orientation on mobile it fixes the canvas
     window.addEventListener('resize', function(e) {
         canvas.width = container.innerWidth();
         canvas.height = container.innerHeight();
@@ -181,12 +198,12 @@ GameObject.prototype.update = function(dt) {
         this.y += this.vy*dt;
     }
 };
-// Draw the object on the screen, required method for game
+// Draw the object on the screen
 GameObject.prototype.render = function() {
     if(this.active) {
         // var myBorders = this.getBoxColliderBorder();
         // ctx.strokeRect(myBorders.left, myBorders.top, myBorders.right - myBorders.left, myBorders.bottom - myBorders.top);
-        ctx.drawImage(Resources.get(this.sprite), this.x, this.y + gameController.verticalConstantFix, gameController.imageSize[0]*this.scale, gameController.imageSize[1]*this.scale);
+        ctx.drawImage(Resources.getImage(this.sprite), this.x, this.y + gameController.verticalConstantFix, gameController.imageSize[0]*this.scale, gameController.imageSize[1]*this.scale);
     }
 };
 
@@ -205,7 +222,7 @@ GameObject.prototype.hasCollided = function(boxBorders) {
     var myBorder = this.getBoxColliderBorder();
 
     return (Math.min(myBorder.right, boxBorders.right) - Math.max(myBorder.left, boxBorders.left) >= 0) && (Math.min(myBorder.bottom, boxBorders.bottom) - Math.max(myBorder.top, boxBorders.top) >= 0);
-}
+};
 
 // Debug function
 GameObject.prototype.debug = function() {
@@ -222,7 +239,7 @@ var Enemy = function(gameLevel) {
 Enemy.prototype = Object.create(GameObject.prototype);
 Enemy.prototype.constructor = Enemy;
 
-// Resets enemy
+// Resets enemy by randomizing its position
 Enemy.prototype.reset = function() {
     this.x = gameController.gameWindow.left - gameController.imageSize[0];
     this.y = gameController.stoneRowPositions[Math.floor(Math.random() * gameController.stoneRowPositions.length)];
@@ -245,7 +262,7 @@ Enemy.prototype.update = function(dt) {
     this.checkCollision();
 };
 
-// Checks enemies Collision
+// Checks enemies Collision with player and each other
 Enemy.prototype.checkCollision = function() {
     if(this.hasCollided(player.getBoxColliderBorder())) {
         player.kill();
@@ -262,7 +279,7 @@ Enemy.prototype.checkCollision = function() {
             this.vx = otherEnemy.vx;
         }
     }
-}
+};
 
 // Controllable character
 var Player = function() {
@@ -270,13 +287,11 @@ var Player = function() {
     GameObject.call(this, 'images/char-boy.png');
 
     this.lastClickPosition = null;
-
-    this.reset();
 };
 Player.prototype = Object.create(GameObject.prototype);
 Player.prototype.constructor = Player;
 
-// Resets player
+// Resets player to its initial position
 Player.prototype.reset = function() {
     this.x = gameController.columnPositions[0];
     this.y = gameController.grassRowPositions[1];
@@ -297,10 +312,17 @@ Player.prototype.getCenter = function() {
         (myBorders.right + myBorders.left)/2,
         (myBorders.top + myBorders.bottom)/2,
     ];
-}
+};
 
 // Kilss player
 Player.prototype.kill = function() {
+    if(gameController.audioOn) {
+        var deathSound = Resources.getAudio('sounds/death.wav');
+        deathSound.pause();
+        deathSound.currentTime = 0;
+        deathSound.play();
+    }
+
     gameController.reset();
 };
 
@@ -348,10 +370,9 @@ Player.prototype.checkMovement = function(step, target) {
 
 // Updates player and check for position limits
 Player.prototype.update = function(dt) {
-    // Stops when arriving at target destination.
+    // Stops when arriving at target destination if the user is controlling the character by mouse or touch
     if(this.lastClickPosition) {
         var myCenter = this.getCenter();
-        var targetDistance = Math.sqrt(Math.pow(this.lastClickPosition[0] - myCenter[0], 2) + Math.pow(this.lastClickPosition[1] - myCenter[1], 2));
 
         if(Math.abs(this.lastClickPosition[0] - myCenter[0]) < gameController.tileSize[0]*0.1) {
             this.vx = 0;
@@ -360,10 +381,6 @@ Player.prototype.update = function(dt) {
         if(Math.abs(this.lastClickPosition[1] - myCenter[1]) < gameController.tileSize[1]*0.1) {
             this.vy = 0;
         }
-
-        // if( (this.vx == 0) && (this.vy == 0) ) {
-        //     this.lastClickPosition = null;
-        // }
     }
 
     var step = [this.vx*dt, this.vy*dt];
@@ -390,6 +407,24 @@ Player.prototype.update = function(dt) {
 
     if(myBorders.bottom > gameController.gameWindow.bottom) {
         this.y -= myBorders.bottom - gameController.gameWindow.bottom;
+    }
+
+    // Plays audio if the player is moving
+    if(gameController.audioOn) {
+        var stepAudio = Resources.getAudio('sounds/footsteps.wav');
+        stepAudio.loop = true;
+        stepAudio.playbackRate = 1.3;
+        stepAudio.volume = 0.8;
+
+        if( (step[0] !== 0) || (step[1] !== 0) ) {
+            if(stepAudio.paused) {
+                stepAudio.currentTime = 0;
+                stepAudio.play();
+            }
+        }
+        else if(!stepAudio.paused) {
+            stepAudio.pause();
+        }
     }
 };
 
@@ -434,7 +469,7 @@ Player.prototype.handleInput = function(keyDown, direction) {
     }
 };
 
-// Handles user input to controll the character
+// Handles user input to controll the character by mouse or touch
 Player.prototype.handleClickInput = function(clickPosition) {
     this.lastClickPosition = clickPosition;
 
@@ -447,9 +482,9 @@ Player.prototype.handleClickInput = function(clickPosition) {
 
     this.vx *= normilizer;
     this.vy *= normilizer;
-}
+};
 
-// Cancels last target click
+// Cancels last target click (mouse or touch)
 Player.prototype.cancelLastClick = function() {
     if(this.lastClickPosition) {
         this.lastClickPosition = null;
@@ -463,14 +498,16 @@ Player.prototype.cancelLastClick = function() {
 // period - number in seconds.
 // successRate - [0, 1]
 // successCallback - function
-var TimeEvent = function(period, successRate, successCallback) {
+var PeriodicEvent = function(period, successRate, successCallback) {
     this.eventPeriod = period;
     this.timer = period;
     this.successRate = successRate;
 
     this.successCallback = successCallback;
-}
-TimeEvent.prototype.update = function(dt) {
+};
+
+// Tries to trigger event
+PeriodicEvent.prototype.update = function(dt) {
     this.timer -= dt;
 
     if(this.timer < 0) {
@@ -479,18 +516,18 @@ TimeEvent.prototype.update = function(dt) {
             this.successCallback();
         }
     }
-}
+};
 
+// Class to control all enemies
 var EnemyController = function() {
   this.activeEnemies = [];
   this.inactiveEnemies = [];
-  TimeEvent.call(this, 0, 0, this.spawnEnemy);
-
-  this.reset();
-}
-EnemyController.prototype = Object.create(TimeEvent.prototype);
+  PeriodicEvent.call(this, 0, 0, this.spawnEnemy);
+};
+EnemyController.prototype = Object.create(PeriodicEvent.prototype);
 EnemyController.prototype.contructor = EnemyController;
 
+// Recycles enemies and controls the number of active enemies.
 EnemyController.prototype.update = function(dt) {
     var newActiveArray = [];
     var newInactiveArray = [];
@@ -509,15 +546,16 @@ EnemyController.prototype.update = function(dt) {
     Array.prototype.push.apply(this.inactiveEnemies, newInactiveArray);
 
     if(this.activeEnemies.length <= 4 + gameController.gameLevel) {
-        TimeEvent.prototype.update.call(this, dt);
+        PeriodicEvent.prototype.update.call(this, dt);
     }
-}
+};
 
+// Render all enemies
 EnemyController.prototype.render = function() {
     this.activeEnemies.forEach(function (enemy) {
         enemy.render();
     });
-}
+};
 
 // Instatiates a new enemy
 EnemyController.prototype.spawnEnemy = function() {
@@ -529,11 +567,30 @@ EnemyController.prototype.spawnEnemy = function() {
     else {
         this.activeEnemies.push(new Enemy());
     }
-}
+};
 
-// Reset enemies
+// toggles enemies sound
+EnemyController.prototype.sound = function(turnOn) {
+    var bugSound = Resources.getAudio('sounds/bug.mp3');
+
+    if(gameController.audioOn && turnOn) {
+        bugSound.loop = true;
+        bugSound.volume = 0.15;
+        bugSound.pause();
+        bugSound.currentTime = 0;
+        bugSound.play();
+    }
+    else if(!bugSound.paused){
+        bugSound.pause();
+        bugSound.currentTime = 0;
+    }
+};
+
+// Reset all enemies and spawning properties
 EnemyController.prototype.reset = function() {
     this.timer = 0;
+
+    this.sound(true);
 
     this.successRate = Math.min(0.3 + 0.022*gameController.gameLevel, 0.9) ;
     this.eventPeriod = Math.max(0.4 - 0.02*(gameController.gameLevel-1), 0.04);
@@ -550,9 +607,9 @@ EnemyController.prototype.reset = function() {
         newEnemy.x = (Math.floor(Math.random() * gameController.columnPositions.length) - 1) * gameController.tileSize[0];
         this.activeEnemies.push(newEnemy);
     }
-}
+};
 
-// This object will block a water tile
+// This object will block the player from reaching a water tile
 var Rock = function(columnIndex) {
     GameObject.call(this, 'images/Rock.png');
 
@@ -565,15 +622,14 @@ var Rock = function(columnIndex) {
 
     this.boxColliderSize = [gameController.imageSize[0]*0.9, gameController.imageSize[1]*0.52];
     this.boxColliderPositionOffset = [(gameController.imageSize[0] - this.boxColliderSize[0])/2, gameController.imageSize[1]*0.38];
-}
+};
 Rock.prototype = Object.create(GameObject.prototype);
 Rock.prototype.contructor = RockController;
 
+// The class will contain all of the game rocks
 var RockController = function() {
     this.rocks = [];
-
-    this.reset();
-}
+};
 
 // Generates rocks
 RockController.prototype.reset = function() {
@@ -588,13 +644,14 @@ RockController.prototype.reset = function() {
             }
         }
     }
-}
+};
 
+// Render all rocks
 RockController.prototype.render = function() {
     this.rocks.forEach(function(rock) {
         rock.render();
     });
-}
+};
 
 
 // --------------------------------------------------------------** Object instances
@@ -610,7 +667,7 @@ enemyController.activeEnemies.forEach(function(enemy) {
 
 
 // --------------------------------------------------------------** Event subscriptions
-// These listens for key presses and sends the keys to your Player.handleInput method
+// These listen for key presses and sends the keys to the corresponding player handler
 document.addEventListener('keydown', function(e) {
     var allowedKeys = {
         37: 'left',
