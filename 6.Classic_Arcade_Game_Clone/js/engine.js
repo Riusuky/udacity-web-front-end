@@ -62,32 +62,6 @@ var Engine = (function(global) {
         lastTime = Date.now();
         reset();
 
-        var backgroundAudio = Resources.getAudio('sounds/background.mp3');
-        backgroundAudio.loop = true;
-        backgroundAudio.play();
-
-        $('.music-button').click(function() {
-            if(backgroundAudio.paused) {
-                $(this).toggleClass('fa-volume-up', true);
-                $(this).toggleClass('fa-volume-off', false);
-                backgroundAudio.play();
-
-                gameController.audioOn = true;
-
-                enemyController.sound(true);
-            }
-            else {
-                $(this).toggleClass('fa-volume-up', false);
-                $(this).toggleClass('fa-volume-off', true);
-                backgroundAudio.pause();
-                backgroundAudio.currentTime = 0;
-
-                gameController.audioOn = false;
-
-                enemyController.sound(false);
-            }
-        });
-
         main();
     }
 
@@ -165,7 +139,7 @@ var Engine = (function(global) {
      * all of these images are properly loaded our game will start.
      */
 
-    Resources.onReady(init);
+    Resources.onImagesReady(init);
 
     Resources.loadImage([
         'images/stone-block.png',
@@ -176,11 +150,64 @@ var Engine = (function(global) {
         'images/Rock.png'
     ]);
 
-    Resources.loadAudio([
-        'sounds/background.mp3',
-        'sounds/bug.mp3',
-        'sounds/death.mp3',
-        'sounds/footsteps.mp3',
-        'sounds/win.mp3'
-    ]);
+    function RequestAudioPermission() {
+        if(confirm('Can I play sound for the game?')) {
+            Resources.onAudioReady(function() {
+                var backgroundAudio = Resources.getAudio('sounds/background.mp3');
+
+                backgroundAudio.loop = true;
+                backgroundAudio.play();
+
+                $('.music-button').toggleClass('fa-volume-up', true);
+                $('.music-button').toggleClass('fa-volume-off', false);
+
+                enemyController.sound(true);
+
+                $('.music-button').unbind( "click" );
+
+                $('.music-button').click(function() {
+                    if(backgroundAudio.paused) {
+                        $(this).toggleClass('fa-volume-up', true);
+                        $(this).toggleClass('fa-volume-off', false);
+                        backgroundAudio.play();
+
+                        gameController.audioOn = true;
+
+                        enemyController.sound(true);
+                    }
+                    else {
+                        $(this).toggleClass('fa-volume-up', false);
+                        $(this).toggleClass('fa-volume-off', true);
+                        backgroundAudio.pause();
+                        backgroundAudio.currentTime = 0;
+
+                        gameController.audioOn = false;
+
+                        enemyController.sound(false);
+
+                        var stepAudio = Resources.getAudio('sounds/footsteps.mp3');
+                        stepAudio.pause();
+                    }
+                });
+            });
+
+            Resources.loadAudio([
+                'sounds/background.mp3',
+                'sounds/bug.mp3',
+                'sounds/death.mp3',
+                'sounds/footsteps.mp3',
+                'sounds/win.mp3'
+            ]);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    if(!RequestAudioPermission()) {
+        $('.music-button').click(function() {
+            RequestAudioPermission();
+        });
+    }
 })(this);

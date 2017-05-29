@@ -9,7 +9,8 @@
 (function() {
     var imageResourceCache = {};
     var audioResourceCache = {};
-    var readyCallbacks = [];
+    var imagesReadyCallbacks = [];
+    var audioReadyCallbacks = [];
 
     /* This is the publicly accessible image loading function. It accepts
      * an array of strings pointing to image files or a string for a single
@@ -68,9 +69,9 @@
                 /* Once the image is actually loaded and properly cached,
                  * call all of the onReady() callbacks we have defined.
                  */
-                if(isReady()) {
-                    readyCallbacks.forEach(function(func) { func(); });
-                    readyCallbacks = [];
+                if(areImagesReady()) {
+                    imagesReadyCallbacks.forEach(function(func) { func(); });
+                    imagesReadyCallbacks = [];
                 }
             };
 
@@ -92,9 +93,9 @@
             sound.oncanplaythrough = function() {
                 audioResourceCache[url] = sound;
 
-                if(isReady()) {
-                    readyCallbacks.forEach(function(func) { func(); });
-                    readyCallbacks = [];
+                if(isAudioReady()) {
+                    audioReadyCallbacks.forEach(function(func) { func(); });
+                    audioReadyCallbacks = [];
                     sound.oncanplaythrough = null;
                 }
             };
@@ -120,10 +121,7 @@
         return audioResourceCache[url];
     }
 
-    /* This function determines if all of the images and audios that have been requested
-     * for loading have in fact been properly loaded.
-     */
-    function isReady() {
+    function areImagesReady() {
         var ready = true;
         for(var k in imageResourceCache) {
             if(imageResourceCache.hasOwnProperty(k) &&
@@ -131,6 +129,12 @@
                 ready = false;
             }
         }
+
+        return ready;
+    }
+
+    function isAudioReady() {
+        var ready = true;
 
         for(var h in audioResourceCache) {
             if(audioResourceCache.hasOwnProperty(h) &&
@@ -142,11 +146,12 @@
         return ready;
     }
 
-    /* This function will add a function to the callback stack that is called
-     * when all requested images are properly loaded.
-     */
-    function onReady(func) {
-        readyCallbacks.push(func);
+    function onImagesReady(func) {
+        imagesReadyCallbacks.push(func);
+    }
+
+    function onAudioReady(func) {
+        audioReadyCallbacks.push(func);
     }
 
     /* This object defines the publicly accessible functions available to
@@ -157,7 +162,9 @@
         loadAudio: loadAudio,
         getImage: getImage,
         getAudio: getAudio,
-        onReady: onReady,
-        isReady: isReady
+        onImagesReady: onImagesReady,
+        onAudioReady: onAudioReady,
+        areImagesReady: areImagesReady,
+        isAudioReady: isAudioReady
     };
 })();

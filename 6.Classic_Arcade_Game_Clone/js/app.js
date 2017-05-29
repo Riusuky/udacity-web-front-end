@@ -107,11 +107,14 @@ var gameController = (function() {
 
             if(gameController.audioOn) {
                 var stepAudio = Resources.getAudio('sounds/win.mp3');
-                stepAudio.volume = 0.6;
-                stepAudio.playbackRate = 2;
-                stepAudio.pause();
-                stepAudio.currentTime = 0;
-                stepAudio.play();
+
+                if(stepAudio) {
+                    stepAudio.volume = 0.6;
+                    stepAudio.playbackRate = 2;
+                    stepAudio.pause();
+                    stepAudio.currentTime = 0;
+                    stepAudio.play();
+                }
             }
 
             object.refresh();
@@ -324,9 +327,12 @@ Player.prototype.getCenter = function() {
 Player.prototype.kill = function() {
     if(gameController.audioOn) {
         var deathSound = Resources.getAudio('sounds/death.mp3');
-        deathSound.pause();
-        deathSound.currentTime = 0;
-        deathSound.play();
+
+        if(deathSound) {
+            deathSound.pause();
+            deathSound.currentTime = 0;
+            deathSound.play();
+        }
     }
 
     gameController.reset();
@@ -398,38 +404,46 @@ Player.prototype.update = function(dt) {
         step = me.checkMovement(step, rock);
     });
 
-    this.x += step[0];
-    this.y += step[1];
+    var futureBorder = this.getBoxColliderBorder();
 
-    var myBorders = this.getBoxColliderBorder();
+    futureBorder.left += step[0];
+    futureBorder.right += step[0];
+    futureBorder.top += step[1];
+    futureBorder.bottom += step[1];
 
     // Blocks player from leaving the game windows
-    if(myBorders.left < gameController.gameWindow.left) {
-        this.x += gameController.gameWindow.left - myBorders.left;
+    if(futureBorder.left < gameController.gameWindow.left) {
+        step[0] += gameController.gameWindow.left - futureBorder.left;
     }
-    else if(myBorders.right > gameController.gameWindow.right) {
-        this.x -= myBorders.right - gameController.gameWindow.right;
+    else if(futureBorder.right > gameController.gameWindow.right) {
+        step[0] -= futureBorder.right - gameController.gameWindow.right;
     }
 
-    if(myBorders.bottom > gameController.gameWindow.bottom) {
-        this.y -= myBorders.bottom - gameController.gameWindow.bottom;
+    if(futureBorder.bottom > gameController.gameWindow.bottom) {
+        step[1] -= futureBorder.bottom - gameController.gameWindow.bottom;
     }
+
+    this.x += step[0];
+    this.y += step[1];
 
     // Plays audio if the player is moving
     if(gameController.audioOn) {
         var stepAudio = Resources.getAudio('sounds/footsteps.mp3');
-        stepAudio.loop = true;
-        stepAudio.playbackRate = 1.3;
-        stepAudio.volume = 0.8;
 
-        if( (step[0] !== 0) || (step[1] !== 0) ) {
-            if(stepAudio.paused) {
-                stepAudio.currentTime = 0;
-                stepAudio.play();
+        if(stepAudio) {
+            stepAudio.loop = true;
+            stepAudio.playbackRate = 1.3;
+            stepAudio.volume = 0.8;
+
+            if( (Math.abs(step[0]) > gameController.tileSize[0]*0.001) || (Math.abs(step[1]) > gameController.tileSize[1]*0.001) ) {
+                if(stepAudio.paused) {
+                    stepAudio.currentTime = 0;
+                    stepAudio.play();
+                }
             }
-        }
-        else if(!stepAudio.paused) {
-            stepAudio.pause();
+            else if(!stepAudio.paused) {
+                stepAudio.pause();
+            }
         }
     }
 };
@@ -579,16 +593,18 @@ EnemyController.prototype.spawnEnemy = function() {
 EnemyController.prototype.sound = function(turnOn) {
     var bugSound = Resources.getAudio('sounds/bug.mp3');
 
-    if(gameController.audioOn && turnOn) {
-        bugSound.loop = true;
-        bugSound.volume = 0.15;
-        bugSound.pause();
-        bugSound.currentTime = 0;
-        bugSound.play();
-    }
-    else if(!bugSound.paused){
-        bugSound.pause();
-        bugSound.currentTime = 0;
+    if(bugSound) {
+        if(gameController.audioOn && turnOn) {
+            bugSound.loop = true;
+            bugSound.volume = 0.15;
+            bugSound.pause();
+            bugSound.currentTime = 0;
+            bugSound.play();
+        }
+        else if(!bugSound.paused){
+            bugSound.pause();
+            bugSound.currentTime = 0;
+        }
     }
 };
 
