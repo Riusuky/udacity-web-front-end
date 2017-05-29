@@ -1,3 +1,16 @@
+@keyframes rotate {
+    from {
+        transform: translate(-50%, -50%) rotate(0);
+    }
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+html {
+    overflow: hidden;
+}
+
 body {
     box-sizing: border-box;
     margin: 0;
@@ -5,7 +18,6 @@ body {
     width: 100vw;
     height: 100vh;
     background-color: #cdcca6;
-    overflow: hidden;
 }
 
 h3 {
@@ -32,14 +44,19 @@ main {
     height: 100%;
     width: calc((100vh - 10px)*0.82);
     order: 1;
-    cursor: pointer;
+}
+
+.game-container.loading {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .score-container {
     padding: 0 15px;
     order: 2;
     cursor: default;
-    user-select: none;
 }
 
 .current,
@@ -62,6 +79,34 @@ main {
 .value {
     font-size: 1.5em;
     margin: 0 0 0 30px;
+}
+
+.loading-text {
+    position: relative;
+    font-size: 2.5vw;
+    box-sizing: border-box;
+    color: #2c2c2c;
+}
+
+.loading-text::before,
+.loading-text::after {
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+.loading-text::before {
+    padding: 6vw;
+    content: "";
+    border: 5px dashed #2c2c2c;
+    border-radius: 50%;
+    transform-origin: center;
+    animation: 6s linear infinite rotate;
+}
+
+.loading-text::after {
+    padding: 4.7vw 2.5vw;
+    content: "Loading";
+
 }
 
 @media screen and (max-aspect-ratio: 6/5) {

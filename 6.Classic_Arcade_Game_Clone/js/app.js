@@ -1,3 +1,5 @@
+'use strict';
+
 // --------------------------------------------------------------** Game controller Class
 // It holds some main game properties and will controll some major aspects of the game
 var gameController = (function() {
@@ -18,10 +20,6 @@ var gameController = (function() {
 
     canvas.width = container.innerWidth();
     canvas.height = container.innerHeight();
-
-    container.prepend(canvas);
-
-    this.ctx = ctx;
 
     var waterSprite = 'images/water-block.png';
     var stoneSprite = 'images/stone-block.png';
@@ -102,15 +100,13 @@ var gameController = (function() {
         ctx.fillStyle = 'black';
     };
 
-    object.adjustMapSize();
-
     // Checks if the player has win the current level
     object.update = function() {
         if(player.getBoxColliderBorder().bottom < object.waterRowPositions[object.waterRowPositions.length-1] + object.tileSize[1]) {
             object.gameLevel++;
 
             if(gameController.audioOn) {
-                var stepAudio = Resources.getAudio('sounds/win.wav');
+                var stepAudio = Resources.getAudio('sounds/win.mp3');
                 stepAudio.volume = 0.6;
                 stepAudio.playbackRate = 2;
                 stepAudio.pause();
@@ -142,6 +138,14 @@ var gameController = (function() {
         rockController.reset();
     };
 
+    object.init = function() {
+        container.prepend(canvas);
+
+        object.ctx = ctx;
+
+        object.adjustMapSize();
+    }
+
     var currentScore = $('.current .value');
     var maxScore = $('.max .value');
 
@@ -166,6 +170,8 @@ var gameController = (function() {
         object.adjustMapSize();
 
         player.reset();
+
+        enemyController.reset();
     });
 
     return object;
@@ -203,7 +209,7 @@ GameObject.prototype.render = function() {
     if(this.active) {
         // var myBorders = this.getBoxColliderBorder();
         // ctx.strokeRect(myBorders.left, myBorders.top, myBorders.right - myBorders.left, myBorders.bottom - myBorders.top);
-        ctx.drawImage(Resources.getImage(this.sprite), this.x, this.y + gameController.verticalConstantFix, gameController.imageSize[0]*this.scale, gameController.imageSize[1]*this.scale);
+        gameController.ctx.drawImage(Resources.getImage(this.sprite), this.x, this.y + gameController.verticalConstantFix, gameController.imageSize[0]*this.scale, gameController.imageSize[1]*this.scale);
     }
 };
 
@@ -317,7 +323,7 @@ Player.prototype.getCenter = function() {
 // Kilss player
 Player.prototype.kill = function() {
     if(gameController.audioOn) {
-        var deathSound = Resources.getAudio('sounds/death.wav');
+        var deathSound = Resources.getAudio('sounds/death.mp3');
         deathSound.pause();
         deathSound.currentTime = 0;
         deathSound.play();
@@ -411,7 +417,7 @@ Player.prototype.update = function(dt) {
 
     // Plays audio if the player is moving
     if(gameController.audioOn) {
-        var stepAudio = Resources.getAudio('sounds/footsteps.wav');
+        var stepAudio = Resources.getAudio('sounds/footsteps.mp3');
         stepAudio.loop = true;
         stepAudio.playbackRate = 1.3;
         stepAudio.volume = 0.8;
@@ -714,29 +720,35 @@ function followMouse(event) {
     }
 }
 
-document.addEventListener('mousedown', function(event) {
+document.querySelector('main').addEventListener('mousedown', function(event) {
+    event.preventDefault();
     followMouse(event);
 });
-document.addEventListener('touchstart', function(event) {
+document.querySelector('main').addEventListener('touchstart', function(event) {
+    event.preventDefault();
     followMouse(event);
 });
 
-document.addEventListener('mousemove', function(event) {
+document.querySelector('main').addEventListener('mousemove', function(event) {
+    event.preventDefault();
     if(player.lastClickPosition) {
         followMouse(event);
     }
 });
 
-document.addEventListener('touchmove', function(event) {
+document.querySelector('main').addEventListener('touchmove', function(event) {
+    event.preventDefault();
     if(player.lastClickPosition) {
         followMouse(event);
     }
 });
 
-document.addEventListener('mouseup', function(event) {
+document.querySelector('main').addEventListener('mouseup', function(event) {
+    event.preventDefault();
     player.cancelLastClick();
 });
 
-document.addEventListener('touchend', function(event) {
+document.querySelector('main').addEventListener('touchend', function(event) {
+    event.preventDefault();
     player.cancelLastClick();
 });

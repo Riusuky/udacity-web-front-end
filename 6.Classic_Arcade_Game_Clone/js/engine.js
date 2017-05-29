@@ -1,3 +1,5 @@
+'use strict';
+
 /* Engine.js
  * This file provides the game loop functionality (update entities and render),
  * draws the initial game board on the screen, and then calls the update and
@@ -53,9 +55,13 @@ var Engine = (function(global) {
      * game loop.
      */
     function init() {
-        reset();
+        $('.loading-text').remove();
+
+        gameController.init();
+
         lastTime = Date.now();
-        
+        reset();
+
         var backgroundAudio = Resources.getAudio('sounds/background.mp3');
         backgroundAudio.loop = true;
         backgroundAudio.play();
@@ -151,7 +157,6 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        console.log('reset!');
         gameController.reset();
     }
 
@@ -174,8 +179,8 @@ var Engine = (function(global) {
     Resources.loadAudio([
         'sounds/background.mp3',
         'sounds/bug.mp3',
-        'sounds/death.wav',
-        'sounds/footsteps.wav',
-        'sounds/win.wav'
+        'sounds/death.mp3',
+        'sounds/footsteps.mp3',
+        'sounds/win.mp3'
     ]);
 })(this);
