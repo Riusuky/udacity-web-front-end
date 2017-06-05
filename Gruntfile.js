@@ -5,58 +5,88 @@ var ngrok = require('ngrok');
 module.exports = function(grunt) {
 
     var portfolioPath = "4.Build_a_Portfolio_Site/";
+    var webOptimizationPath = "7.Website_Optimization/";
 
     grunt.initConfig({
         responsive_images: {
-          portfolio: {
-            options: {
-              engine: "im",
-              newFilesOnly: true,
-              sizes: [
-                {
-                  name: "small",
-                  width: 550,
-                  quality: 70
+            portfolio: {
+                options: {
+                    engine: "im",
+                    newFilesOnly: true,
+                    sizes: [
+                        {
+                            name: "small",
+                            width: 550,
+                            quality: 70
+                        },
+                        {
+                            name: "medium",
+                            width: 750,
+                            quality: 70
+                        },
+                        {
+                            name: "large",
+                            width: 940,
+                            quality: 70
+                        },
+                        {
+                            name: "large",
+                            suffix: "-2x",
+                            width: 1880,
+                            quality: 70
+                        }
+                    ]
                 },
-                {
-                  name: "medium",
-                  width: 750,
-                  quality: 70
-                },
-                {
-                  name: "large",
-                  width: 940,
-                  quality: 70
-                },
-                {
-                  name: "large",
-                  suffix: "-2x",
-                  width: 1880,
-                  quality: 70
-                }
-              ]
+                files: [{
+                    expand: true,
+                    src: ["*.{gif,jpg,png}"],
+                    cwd: portfolioPath+"src/img/resizable/",
+                    dest: portfolioPath+"img/"
+                }]
             },
-            files: [{
-              expand: true,
-              src: ["*.{gif,jpg,png}"],
-              cwd: portfolioPath+"src/img/resizable/",
-              dest: portfolioPath+"img/"
-            }]
-          }
+            webOptimization: {
+                options: {
+                    engine: "im",
+                    newFilesOnly: true,
+                    sizes: [
+                        {
+                            rename: false,
+                            width: 600,
+                            quality: 70
+                        }
+                    ]
+                },
+                files: [{
+                    expand: true,
+                    src: ["*.{gif,jpg,png}"],
+                    cwd: webOptimizationPath+"src/views/images/resizable/",
+                    dest: webOptimizationPath+"dist/views/images/"
+                }]
+            }
         },
 
         imagemin: {
-          options: {
-            optimizationLevel: 5
-          },
-          portfolio: {
-            files: [{
-              expand: true,
-              cwd: portfolioPath+"img/",
-              src: ["**/*.{png,jpg,gif,svg}"],
-              dest: portfolioPath+"img/"
-            }]
-          }
+            options: {
+                optimizationLevel: 5
+            },
+            portfolio: {
+                files: [{
+                    expand: true,
+                    cwd: portfolioPath+"img/",
+                    src: ["**/*.{png,jpg,gif,svg}"],
+                    dest: portfolioPath+"img/"
+                }]
+            },
+            webOptimization: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: webOptimizationPath+"dist/",
+                        src: ["**/*.{png,jpg,gif,svg}"],
+                        dest: webOptimizationPath+"dist/"
+                    }
+                ]
+            }
         },
 
         googlefonts: {
@@ -112,70 +142,120 @@ module.exports = function(grunt) {
         },
 
         cssmin: {
-          portfolio: {
-            files: [{
-              expand: true,
-              cwd: portfolioPath+"css/",
-              src: ["*.css", "!*.min.css"],
-              dest: portfolioPath+"css/",
-              ext: ".min.css"
-            }]
-          }
+            portfolio: {
+                files: [{
+                    expand: true,
+                    cwd: portfolioPath+"css/",
+                    src: ["*.css", "!*.min.css"],
+                    dest: portfolioPath+"css/",
+                    ext: ".min.css"
+                }]
+            },
+            webOptimization: {
+                files: [{
+                    expand: true,
+                    cwd: webOptimizationPath+"src/",
+                    src: ["**/*.css", "!**/*.min.css"],
+                    dest: webOptimizationPath+"dist/"
+                }]
+            }
         },
 
         htmlmin: {
-          portfolio: {
-            options: {
-              removeComments: true,
-              collapseWhitespace: true
+            portfolio: {
+                options: {
+                    removeComments: true,
+                    collapseWhitespace: true
+                },
+                files: [
+                    {
+                        expand: true,
+                        cwd: portfolioPath+"src/",
+                        src: ["*.html"],
+                        dest: portfolioPath
+                    }
+                ]
             },
-            files: [
-              {
-                expand: true,
-                cwd: portfolioPath+"src/",
-                src: ["*.html"],
-                dest: portfolioPath
-              }
-            ]
-          }
+            webOptimization: {
+                options: {
+                    removeComments: true,
+                    collapseWhitespace: true
+                },
+                files: [
+                    {
+                        expand: true,
+                        cwd: webOptimizationPath+"src/",
+                        src: ["**/*.html"],
+                        dest: webOptimizationPath+"dist/"
+                    }
+                ]
+            }
+        },
+
+        uglify: {
+            webOptimization: {
+                files: [{
+                    expand: true,
+                    cwd: webOptimizationPath+"src/",
+                    src: "**/*.js",
+                    dest: webOptimizationPath+"dist/"
+                }]
+            }
         },
 
         clean: {
           portfolio: [portfolioPath+"css/", portfolioPath+"img/"],
           portfolioFonts: [portfolioPath+"fonts/*"],
+          webOptimization: [webOptimizationPath+"dist/"],
           fonts: ["fonts/"]
         },
 
         copy: {
-          portfolioCSS: {
-            files: [
-              {
-                expand: true,
-                src: ["*/**", "normalize.css"],
-                cwd: portfolioPath+"src/css/",
-                dest: portfolioPath+"css/"
-              }
-            ]
-          },
-          portfolioImages: {
-            files: [
-              {
-                expand: true,
-                src: ["*.{jpg,gif,png,svg}"],
-                cwd: portfolioPath+"src/img/",
-                dest: portfolioPath+"img/"
-              }
-            ]
-          },
-          portfolioFonts: {
-            files: [
-              {
-                expand: true,
-                src: ["fonts/**"],
-                dest: portfolioPath
-              }
-            ]
-          }
+            portfolioCSS: {
+                files: [
+                    {
+                        expand: true,
+                        src: ["*/**", "normalize.css"],
+                        cwd: portfolioPath+"src/css/",
+                        dest: portfolioPath+"css/"
+                    }
+                ]
+            },
+            portfolioImages: {
+                files: [
+                    {
+                        expand: true,
+                        src: ["*.{jpg,gif,png,svg}"],
+                        cwd: portfolioPath+"src/img/",
+                        dest: portfolioPath+"img/"
+                    }
+                ]
+            },
+            portfolioFonts: {
+                files: [
+                    {
+                        expand: true,
+                        src: ["fonts/**"],
+                        dest: portfolioPath
+                    }
+                ]
+            },
+            webOptimizationImages: {
+                files: [
+                    {
+                        expand: true,
+                        src: ["*.{jpg,gif,png,svg}"],
+                        cwd: webOptimizationPath+"src/img/",
+                        dest: webOptimizationPath+"dist/img"
+                    },
+                    {
+                        expand: true,
+                        src: ["*.{jpg,gif,png,svg}"],
+                        cwd: webOptimizationPath+"src/views/images/",
+                        dest: webOptimizationPath+"dist/views/images/"
+                    }
+                ]
+            },
         },
 
         pagespeed: {
@@ -202,6 +282,8 @@ module.exports = function(grunt) {
     grunt.registerTask("portfolio-css", ["copy:portfolioCSS", "postcss:portfolio", "cssmin:portfolio"]);
 
     grunt.registerTask("portfolio", ["clean:portfolio", "portfolio-fonts", "htmlmin:portfolio", "portfolio-css", "copy:portfolioImages", "responsive_images:portfolio", "imagemin:portfolio"]);
+
+    grunt.registerTask("webOptimization", ["clean:webOptimization", "htmlmin:webOptimization", "cssmin:webOptimization", "uglify:webOptimization", "copy:webOptimizationImages", "responsive_images:webOptimization", "imagemin:webOptimization"]);
 
     grunt.registerTask('ngrok', 'Run pagespeed with ngrok', function() {
         var done = this.async();
