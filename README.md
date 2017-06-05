@@ -6,4 +6,4 @@ This repository is meant to show all of my Udacity's Web Front End Nanodegree pr
 
 All code content of this repository are covered under the [MIT License](https://opensource.org/licenses/MIT). Copyright © 2017 Gabriel Tamashiro.
 
-Regarding [project 6 (Classic Arcade Game Clone)](/6.Classic_Arcade_Game_Clone) see README for license information on image and audio assets.
+For [project 6 (Classic Arcade Game Clone)](/6.Classic_Arcade_Game_Clone) and [project 7 (Web Optimization)](/7.Website_Optimization) please see their respective README for more information.
