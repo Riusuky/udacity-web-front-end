@@ -50,8 +50,12 @@ module.exports = function(grunt) {
                     newFilesOnly: true,
                     sizes: [
                         {
+                            width: 100,
+                            quality: 70
+                        },
+                        {
                             rename: false,
-                            width: 600,
+                            width: 550,
                             quality: 70
                         }
                     ]
@@ -67,7 +71,7 @@ module.exports = function(grunt) {
 
         imagemin: {
             options: {
-                optimizationLevel: 5
+                optimizationLevel: 6
             },
             portfolio: {
                 files: [{
