@@ -1,0 +1,266 @@
+/* Colors */
+/*
+  Black:         #2c2c2c
+  light-redish:  #ffac9b
+  redish:        #f36548
+  dark-redish:   #bf543e
+  dark-gray:     #565656
+*/
+.red-text {
+    color: #f36548;
+}
+
+.red-background {
+    background-color: #f36548;
+}
+
+.dark-red-background {
+    background-color: #bf543e;
+}
+
+/* Sizing */
+nav,
+header,
+section,
+footer,
+aside,
+article,
+div,
+p,
+figure,
+address,
+img,
+main {
+  box-sizing: border-box;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+}
+
+main,
+.map-container {
+    width: 100%;
+    height: 100%;
+}
+
+.place-list {
+    width: 300px;
+    height: 100%;
+}
+
+
+/* Main Content */
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+main {
+    position: relative;
+}
+
+.ui-layout {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+
+/* Side List */
+.place-list {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    will-change: transform;
+    transition: transform 0.4s;
+}
+
+.place-list.hidden {
+    transform: translate(-100%, 0);
+}
+
+.place-list .list-toggler {
+    left: 100%;
+    font-size: 1.5em;
+    min-width: 50px;
+    min-height: 50px;
+    outline: none;
+    border: none;
+    border-radius: 0 0 25% 0;
+    color: #2c2c2c;
+    cursor: pointer;
+}
+
+.place-list .list-toggler:active {
+    font-size: 1.2em;
+    color: white;
+}
+
+.place-list .header {
+    font-family: 'Luckiest Guy', cursive;
+    color: white;
+    text-shadow: 2px 3px #2c2c2c;
+    line-height: 2.4em;
+    background-color: #bf543e;
+    text-align: center;
+}
+
+.place-list .filter-container {
+    position: relative;
+}
+
+.place-list .filter-container .filter-field {
+    padding: 8px 0;
+    background-color: whitesmoke;
+    color: #565656;
+    border: 4px solid #bf543e;
+}
+
+.place-list .filter-container .filter-field .fa-filter {
+    margin: 0 10px;
+}
+
+.place-list .filter-container .filter-list {
+    padding: 10px 15px;
+    width: 100%;
+    position: absolute;
+    background-color: white;
+}
+
+.place-list .filter-container .filter-list.hidden {
+    visibility: hidden;
+}
+
+.place-list .filter-container .filter-list .filter-item {
+    color: #f36548;
+}
+
+.place-list .filter-container .filter-list .filter-item .icon-type {
+    margin: 0 5px 0 0;
+}
+
+.place-list .filter-container .filter-list .filter-item input {
+    display: none;
+}
+
+.place-list .filter-container .filter-list .filter-item label {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-start;
+}
+
+.place-list .filter-container .filter-list .filter-item input + label::before {
+    margin: 0 10px 0 0;
+    box-sizing: border-box;
+    display: inline-block;
+    content: "";
+    border: 1px solid #f36548;
+    border-radius: 50%;
+    color: #f36548;
+    width: 18px;
+    height: 18px;
+    text-align: end;
+}
+
+.place-list .filter-container .filter-list .filter-item input:checked + label::before {
+    content: "🗸";
+}
+
+.place-list .places-container {
+    flex: 1;
+    list-style: none;
+    overflow: auto;
+}
+
+.place-list .places-container .place-item {
+    padding: 8px;
+    margin: 0 0 2px;
+    color: white;
+    border: 0 solid #bf543e;
+    border-left-width: 15px;
+}
+
+.place-list .places-container .place-item.disabled {
+    color: #ffac9b;
+}
+
+.place-list .places-container .place-item:last-child {
+    margin: 0;
+}
+
+.place-list .places-container .place-item:not(.disabled):hover {
+    background-color: white;
+    color: #f36548;
+}
+
+.place-list .places-container .place-item .icon-type {
+    float: right;
+}
+
+
+/* Info Window */
+
+.spot-info {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.spot-info header {
+    margin: 8px 0;
+    color: #f36548;
+    font-size: 1.2em;
+}
+
+.spot-info .spot-image {
+    max-width: 400px;
+    border-radius: 10px;
+}
+
+.spot-info p {
+    width: 100%;
+    margin: 5px 0 12px;
+}
+
+.spot-info .spot-description {
+    max-width: 38em;
+    font-size: 1em;
+    margin: 0 0 15px;
+}
+
+.spot-info .label {
+    color: #f36548;
+    font-weight: bold;
+}
+
+.spot-info .spot-current-people {
+    float: left;
+}
+
+.spot-info .spot-rating {
+    float: right;
+}
+
+.spot-info .spot-description {
+    text-align: justify;
+    margin: 0 0 10px;
+}
+
+.spot-info .spot-footer {
+    align-self: flex-end;
+}

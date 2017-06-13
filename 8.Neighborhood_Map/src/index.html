@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>My City Places</title>
+
+        <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/normalize.min.css">
+        <link rel="stylesheet" href="css/main.css">
+
+        <script async defer src="js/knockout-3.4.2.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script async src="js/google-maps.js"></script>
+        <script async src="js/font.js"></script>
+        <script defer src="js/main.js"></script>
+    </head>
+    <body data-bind="event: { mousedown: hideFilterList, touchdown: hideFilterList }">
+        <main>
+            <div class="map-container">
+
+            </div>
+        </main>
+
+        <aside data-bind="css: { hidden: !listIsVisible() }" class="place-list ui-layout red-background hidden">
+            <button type="button" data-bind="click: toggleListVisibility" class="list-toggler ui-layout dark-red-background fa fa-bars"></button>
+
+            <header>
+                <h2 class="header">My City's Cool Spots</h2>
+            </header>
+
+            <section data-bind="event: { mousedown: showFilterList, touchdown: showFilterList }" class="filter-container">
+                <div class="filter-field">
+                    <span class="fa fa-filter"></span>
+                    <span>Select filters</span>
+                </div>
+
+                <div data-bind="css: { hidden: !filterListIsVisible() }" class="filter-list hidden">
+                    <div data-bind="foreach: spotTypes" class="filter-item">
+                        <input type="checkbox" data-bind="checked: visible, attr: { id: name }">
+                        <label data-bind="attr: { for: name }"><span data-bind="css: className" class="icon-type fa"></span><span data-bind="text: name"></span></label>
+                    </div>
+                </div>
+            </section>
+
+            <ul data-bind="foreach: spotList" class="places-container">
+                <li data-bind="css: { disabled: !type.visible() }, click: $parent.panToSpot" class="place-item"><span data-bind="text: name"></span> <span data-bind="css: type.className" class="icon-type fa"></span></li>
+            </ul>
+        </aside>
+    </body>
+</html>
