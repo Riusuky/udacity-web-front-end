@@ -5,7 +5,7 @@
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>My City Places</title>
+        <title>My Cool Spots</title>
 
         <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="css/normalize.min.css">
@@ -17,37 +17,61 @@
         <script async src="js/font.js"></script>
         <script defer src="js/main.js"></script>
     </head>
-    <body data-bind="event: { mousedown: hideFilterList, touchdown: hideFilterList }">
+    <body data-bind="event: { mousedown: onAppClick, touchdown: onAppClick }">
         <main>
             <div class="map-container">
 
             </div>
         </main>
 
-        <aside data-bind="css: { hidden: !listIsVisible() }" class="place-list ui-layout red-background hidden">
-            <button type="button" data-bind="click: toggleListVisibility" class="list-toggler ui-layout dark-red-background fa fa-bars"></button>
-
-            <header>
-                <h2 class="header">My City's Cool Spots</h2>
+        <!-- Side Menu -->
+        <aside data-bind="css: { hidden: !sideMenuIsVisible() }, event: { mousedown: onSideMenuClick, touchdown: onSideMenuClick }" class="sidemenu ui-layout red-background hidden">
+            <header class="dark-red-background">
+                <h2 data-bind="text: spotTabSelected() ? 'My City\'s Cool Spots' : 'My Favorite Spots'" class="header"></h2>
             </header>
 
-            <section data-bind="event: { mousedown: showFilterList, touchdown: showFilterList }" class="filter-container">
-                <div class="filter-field">
-                    <span class="fa fa-filter"></span>
-                    <span>Select filters</span>
-                </div>
-
-                <div data-bind="css: { hidden: !filterListIsVisible() }" class="filter-list hidden">
-                    <div data-bind="foreach: spotTypes" class="filter-item">
-                        <input type="checkbox" data-bind="checked: visible, attr: { id: name }">
-                        <label data-bind="attr: { for: name }"><span data-bind="css: className" class="icon-type fa"></span><span data-bind="text: name"></span></label>
+            <!-- Main tab: list of all the spots and a filter -->
+            <div data-bind="visible: spotTabSelected" class="spot-tab-container">
+                <section data-bind="event: { mousedown: onFilterListClick, touchdown: onFilterListClick }" class="filter-container dark-red-background">
+                    <div class="filter-field rounded-border">
+                        <span class="fa fa-filter"></span>
+                        <span>Select filters</span>
                     </div>
-                </div>
-            </section>
 
-            <ul data-bind="foreach: spotList" class="places-container">
-                <li data-bind="css: { disabled: !type.visible() }, click: $parent.panToSpot" class="place-item"><span data-bind="text: name"></span> <span data-bind="css: type.className" class="icon-type fa"></span></li>
-            </ul>
+                    <div data-bind="css: { hidden: !filterListIsVisible() }" class="filter-list hidden">
+                        <div data-bind="foreach: spotTypes" class="filter-item">
+                            <input type="checkbox" data-bind="checked: visible, attr: { id: name }">
+                            <label data-bind="attr: { for: name }"><span data-bind="css: className" class="icon-type fa"></span><span data-bind="text: name"></span></label>
+                        </div>
+                    </div>
+                </section>
+
+                <ul data-bind="foreach: spotList" class="places-container">
+                    <li data-bind="css: { disabled: !type.visible() }, click:  function(data) { $parent.panToSpot(data); $parent.selectSpot(data); }" class="place-item"><span data-bind="text: name"></span> <span data-bind="css: type.className" class="icon-type fa"></span></li>
+                </ul>
+            </div>
+
+            <!-- Favorite tab -->
+            <div data-bind="visible: favoriteTabSelected" class="favorite-tab-container">
+                <section class="search-container dark-red-background">
+                    <p data-bind="css: { 'extra-space': !searchAvailable() }, text: searchAvailable() ? 'Add your favorite spot:' : 'Searching...'" class="search-label"></p>
+                    <div data-bind="visible: searchAvailable" class="search-field">
+                        <input data-bind="textInput: favoriteSearchValue" type="search" value="" class="search rounded-border" autocomplete="on" list="candidates" placeholder="Enter search string">
+                        <datalist data-bind="foreach: favoriteSearchAutocomplete" id="candidates">
+                            <option data-bind="value: $data">
+                        </datalist>
+                        <button data-bind="click: searchAndAddFavoriteSpot" type="button" class="add-favorite-button red-background">ADD</button>
+                    </div>
+                </section>
+
+                <ul data-bind="foreach: favList" class="places-container">
+                    <li data-bind="css: { disabled: !type.visible() }, click:  function(data) { $parent.panToSpot(data); $parent.selectSpot(data); }" class="place-item"><span data-bind="text: name"></span> <button data-bind="click: $parent.removeFavoriteSpot" type="button" class="remove-favorite-button">REMOVE</button></li>
+                </ul>
+            </div>
+
+            <!-- Side Menu Tab buttons -->
+            <button type="button" data-bind="click: selectSpotTab, css: { unselected: sideMenuIsVisible() && !spotTabSelected(), selected: sideMenuIsVisible() && spotTabSelected() }" class="list-toggler spot-tab ui-layout dark-red-background fa fa-bars"></button>
+            <button type="button" data-bind="click: selectFavoriteTab, css: { unselected: sideMenuIsVisible() && spotTabSelected(), selected: sideMenuIsVisible() && !spotTabSelected() }" class="list-toggler favorite-tab ui-layout dark-red-background fa fa-star"></button>
         </aside>
     </body>
 </html>

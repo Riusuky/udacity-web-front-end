@@ -6,6 +6,7 @@ module.exports = function(grunt) {
 
     var portfolioPath = "4.Build_a_Portfolio_Site/";
     var webOptimizationPath = "7.Website_Optimization/";
+    var neighborhoodMapPath = "8.Neighborhood_Map/";
 
     grunt.initConfig({
         responsive_images: {
@@ -90,6 +91,16 @@ module.exports = function(grunt) {
                         dest: webOptimizationPath+"dist/"
                     }
                 ]
+            },
+            neighborhoodMap: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: neighborhoodMapPath+"dist/",
+                        src: ["**/*.{png,jpg,gif,svg}"],
+                        dest: neighborhoodMapPath+"dist/"
+                    }
+                ]
             }
         },
 
@@ -162,6 +173,14 @@ module.exports = function(grunt) {
                     src: ["**/*.css", "!**/*.min.css"],
                     dest: webOptimizationPath+"dist/"
                 }]
+            },
+            neighborhoodMap: {
+                files: [{
+                    expand: true,
+                    cwd: neighborhoodMapPath+"src/css/",
+                    src: ["*.css", "!**/*.min.css"],
+                    dest: neighborhoodMapPath+"dist/css/"
+                }]
             }
         },
 
@@ -193,6 +212,20 @@ module.exports = function(grunt) {
                         dest: webOptimizationPath+"dist/"
                     }
                 ]
+            },
+            neighborhoodMap: {
+                options: {
+                    removeComments: true,
+                    collapseWhitespace: true
+                },
+                files: [
+                    {
+                        expand: true,
+                        cwd: neighborhoodMapPath+"src/",
+                        src: ["**/*.html"],
+                        dest: neighborhoodMapPath+"dist/"
+                    }
+                ]
             }
         },
 
@@ -204,6 +237,14 @@ module.exports = function(grunt) {
                     src: "**/*.js",
                     dest: webOptimizationPath+"dist/"
                 }]
+            },
+            neighborhoodMap: {
+                files: [{
+                    expand: true,
+                    cwd: neighborhoodMapPath+"src/",
+                    src: "**/*.js",
+                    dest: neighborhoodMapPath+"dist/"
+                }]
             }
         },
 
@@ -211,6 +252,7 @@ module.exports = function(grunt) {
           portfolio: [portfolioPath+"css/", portfolioPath+"img/"],
           portfolioFonts: [portfolioPath+"fonts/*"],
           webOptimization: [webOptimizationPath+"dist/"],
+          neighborhoodMap: [neighborhoodMapPath+"dist/"],
           fonts: ["fonts/"]
         },
 
@@ -260,6 +302,37 @@ module.exports = function(grunt) {
                     }
                 ]
             },
+            neighborhoodMap: {
+                files: [
+                    {
+                        expand: true,
+                        src: ["*.{jpg,gif,png,svg}"],
+                        cwd: neighborhoodMapPath+"src/img/",
+                        dest: neighborhoodMapPath+"dist/img"
+                    },
+                    {
+                        expand: true,
+                        src: ["*.min.css", "*/**"],
+                        cwd: neighborhoodMapPath+"src/css/",
+                        dest: neighborhoodMapPath+"dist/css/"
+                    }
+                ]
+            }
+        },
+
+        jshint: {
+            options: {
+                reporter: require('jshint-stylish')
+            },
+            neighborhoodMap: {
+                files: [
+                    {
+                        expand: true,
+                        src: ["**/*.js", "!**/knockout-3.4.2.js"],
+                        cwd: neighborhoodMapPath+"src/"
+                    }
+                ]
+            }
         },
 
         pagespeed: {
@@ -279,8 +352,6 @@ module.exports = function(grunt) {
 
     require("load-grunt-tasks")(grunt);
 
-    grunt.registerTask("default", []);
-
     grunt.registerTask("portfolio-fonts", ["clean:portfolioFonts", "googlefonts:portfolio", "regex_replacer:fixPortfolioUrls", "regex_replacer:fixPortfolioStrings", "copy:portfolioFonts", "clean:fonts"]);
 
     grunt.registerTask("portfolio-css", ["copy:portfolioCSS", "postcss:portfolio", "cssmin:portfolio"]);
@@ -288,6 +359,10 @@ module.exports = function(grunt) {
     grunt.registerTask("portfolio", ["clean:portfolio", "portfolio-fonts", "htmlmin:portfolio", "portfolio-css", "copy:portfolioImages", "responsive_images:portfolio", "imagemin:portfolio"]);
 
     grunt.registerTask("webOptimization", ["clean:webOptimization", "htmlmin:webOptimization", "cssmin:webOptimization", "uglify:webOptimization", "copy:webOptimizationImages", "responsive_images:webOptimization", "imagemin:webOptimization"]);
+
+    grunt.registerTask("neighborhoodMap", ["jshint:neighborhoodMap", "clean:neighborhoodMap", "htmlmin:neighborhoodMap", "cssmin:neighborhoodMap", "uglify:neighborhoodMap", "copy:neighborhoodMap", "imagemin:neighborhoodMap"]);
+
+    grunt.registerTask("default", ["portfolio", "webOptimization", "neighborhoodMap"]);
 
     grunt.registerTask('ngrok', 'Run pagespeed with ngrok', function() {
         var done = this.async();

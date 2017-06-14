@@ -2,6 +2,10 @@
 
 This project goal was to optimize some [given webpages](https://github.com/udacity/frontend-nanodegree-mobile-portfolio) so that they could both [load quickly](https://riusuky.github.io/udacity-web-front-end/7.Website_Optimization/dist/index.html) and [run at 60fps](https://riusuky.github.io/udacity-web-front-end/7.Website_Optimization/dist/views/pizza.html).
 
+## Getting Started
+
+To properly deploy the project, please see the README file located at the project's root.
+
 ## Optimizations
 
 ### [Page load time](https://riusuky.github.io/udacity-web-front-end/7.Website_Optimization/dist/index.html)
@@ -21,11 +25,3 @@ This project goal was to optimize some [given webpages](https://github.com/udaci
 - Some element styles that were being set by JavaScript are now defined at style.css in its corresponding class;
 - Scrolling does not trigger forced synchronous layout to change background pizza positions;
 - Number of background pizzas are now calculated based on the screen size.
-
-## [Grunt](https://gruntjs.com)
-
-The post-tak-runner version of the project is located at the dist folder. The Gruntfile.js and package.json files are located at the [repository's root](../).
-
-To install all dependencies just run `npm install` at the [repository's root](../).
-
-To run all tasks related to this project run `grunt webOptimization`. This will regenerate the dist folder.

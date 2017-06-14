@@ -18,6 +18,7 @@
     background-color: #bf543e;
 }
 
+
 /* Sizing */
 nav,
 header,
@@ -57,9 +58,10 @@ main,
     height: 100%;
 }
 
-.place-list {
-    width: 300px;
-    height: 100%;
+
+/* General */
+.rounded-border {
+    border-radius: 4px;
 }
 
 
@@ -76,28 +78,30 @@ main {
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 1;
+    z-index: 2;
 }
 
 
-/* Side List */
-.place-list {
+/* Side Menu */
+.sidemenu {
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-start;
     will-change: transform;
     transition: transform 0.4s;
+    width: 19em;
+    height: 100%;
 }
 
-.place-list.hidden {
+.sidemenu.hidden {
     transform: translate(-100%, 0);
 }
 
-.place-list .list-toggler {
+.sidemenu .list-toggler {
     left: 100%;
     font-size: 1.5em;
-    min-width: 50px;
-    min-height: 50px;
+    width: 2em;
+    height: 2em;
     outline: none;
     border: none;
     border-radius: 0 0 25% 0;
@@ -105,142 +109,246 @@ main {
     cursor: pointer;
 }
 
-.place-list .list-toggler:active {
-    font-size: 1.2em;
+.sidemenu .list-toggler.spot-tab,
+.sidemenu .list-toggler.favorite-tab {
+    transition: transform 0.4s;
+    z-index: -1;
+}
+
+.sidemenu .list-toggler.favorite-tab {
+    transform: translate(-2.5em, 0);
+}
+
+.sidemenu .list-toggler.spot-tab.unselected,
+.sidemenu .list-toggler.favorite-tab.unselected {
+    background-color: #f36548;
+    transform: translate(-0.6em, 0);
+}
+
+.sidemenu .list-toggler.spot-tab.selected,
+.sidemenu .list-toggler.favorite-tab.selected {
+    transform: translate(0, 0);
+}
+
+.sidemenu .list-toggler.spot-tab {
+    top: 0;
+}
+
+.sidemenu .list-toggler.favorite-tab {
+    top: 2.2em;
+    border-radius: 0 25% 25% 0;
+}
+
+.sidemenu .list-toggler:active::before {
+    font-size: 0.9em;
     color: white;
 }
 
-.place-list .header {
+.sidemenu .header {
     font-family: 'Luckiest Guy', cursive;
+    font-weight: lighter;
     color: white;
-    text-shadow: 2px 3px #2c2c2c;
+    text-shadow: 0.1em 0.18em #2c2c2c;
     line-height: 2.4em;
-    background-color: #bf543e;
     text-align: center;
+    padding: 0 0 0.4em;
 }
 
-.place-list .filter-container {
+.sidemenu .filter-container {
     position: relative;
+    padding: 1em;
 }
 
-.place-list .filter-container .filter-field {
-    padding: 8px 0;
+.sidemenu .filter-container .filter-field {
+    padding: 0.5em 0;
     background-color: whitesmoke;
     color: #565656;
-    border: 4px solid #bf543e;
 }
 
-.place-list .filter-container .filter-field .fa-filter {
-    margin: 0 10px;
+.sidemenu .filter-container .filter-field .fa-filter {
+    margin: 0 0.8em;
 }
 
-.place-list .filter-container .filter-list {
-    padding: 10px 15px;
-    width: 100%;
+.sidemenu .filter-container .filter-list {
+    padding: 0.8em 1.5em;
+    width: 80%;
     position: absolute;
     background-color: white;
+    border-radius: 0 0 5px 5px;
 }
 
-.place-list .filter-container .filter-list.hidden {
+.sidemenu .filter-container .filter-list.hidden {
     visibility: hidden;
 }
 
-.place-list .filter-container .filter-list .filter-item {
+.sidemenu .filter-container .filter-list .filter-item {
     color: #f36548;
 }
 
-.place-list .filter-container .filter-list .filter-item .icon-type {
-    margin: 0 5px 0 0;
+.sidemenu .filter-container .filter-list .filter-item .icon-type {
+    margin: 0 0.5em 0 0;
 }
 
-.place-list .filter-container .filter-list .filter-item input {
+.sidemenu .filter-container .filter-list .filter-item input {
     display: none;
 }
 
-.place-list .filter-container .filter-list .filter-item label {
+.sidemenu .filter-container .filter-list .filter-item label {
+    margin: 1em 0;
     display: flex;
     flex-flow: row nowrap;
-    align-items: flex-start;
+    align-items: center;
 }
 
-.place-list .filter-container .filter-list .filter-item input + label::before {
-    margin: 0 10px 0 0;
+.sidemenu .filter-container .filter-list .filter-item input + label::before {
+    margin: 0 0.8em 0 0;
     box-sizing: border-box;
     display: inline-block;
     content: "";
     border: 1px solid #f36548;
     border-radius: 50%;
     color: #f36548;
-    width: 18px;
-    height: 18px;
+    width: 1.1em;
+    height: 1.1em;
     text-align: end;
 }
 
-.place-list .filter-container .filter-list .filter-item input:checked + label::before {
+.sidemenu .filter-container .filter-list .filter-item input:checked + label::before {
     content: "🗸";
 }
 
-.place-list .places-container {
+.sidemenu .spot-tab-container,
+.sidemenu .favorite-tab-container {
     flex: 1;
     list-style: none;
     overflow: auto;
 }
 
-.place-list .places-container .place-item {
-    padding: 8px;
-    margin: 0 0 2px;
+.sidemenu .places-container .place-item {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.7em  0.4em 0.7em  0.7em;
+    margin: 0 0 0.35em;
     color: white;
     border: 0 solid #bf543e;
-    border-left-width: 15px;
+    border-left-width: 1em;
 }
 
-.place-list .places-container .place-item.disabled {
+.sidemenu .places-container .place-item.disabled {
     color: #ffac9b;
 }
 
-.place-list .places-container .place-item:last-child {
+.sidemenu .places-container .place-item:last-child {
     margin: 0;
 }
 
-.place-list .places-container .place-item:not(.disabled):hover {
+.sidemenu .places-container .place-item:not(.disabled):hover {
     background-color: white;
     color: #f36548;
 }
 
-.place-list .places-container .place-item .icon-type {
-    float: right;
+.sidemenu .search-label {
+    color: white;
+    line-height: 1.2em;
+    padding: 0 1em;
+}
+
+.sidemenu .search-label.extra-space {
+    padding: 0 1em 3.13em;
+}
+
+.sidemenu .search-field {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.4em 0.7em 1em 1em;
+}
+
+.sidemenu .search-field .search,
+.sidemenu .search-field .add-favorite-button,
+.sidemenu .places-container .remove-favorite-button {
+    outline: none;
+    border: none;
+}
+
+.sidemenu .search-field .search,
+.sidemenu .search-field .add-favorite-button {
+    padding: 0 0.6em;
+    line-height: 2.5em;
+}
+
+.sidemenu .places-container .remove-favorite-button {
+    padding: 0.3em 0.6em;
+    line-height: 2em;
+}
+
+.sidemenu .search-field .add-favorite-button,
+.sidemenu .places-container .remove-favorite-button {
+    border-radius: 8px;
+}
+
+.sidemenu .search-field .search {
+    width: 14.6em;
+    color: #f36548;
+}
+
+.sidemenu .search-field .add-favorite-button{
+    color: white;
+}
+
+.sidemenu .search-field .add-favorite-button:active {
+    background-color: white;
+    color: #f36548;
+}
+
+.sidemenu .places-container .remove-favorite-button {
+    color: #f36548;
+    border: 1px solid #f36548;
+    background-color: white;
+}
+
+.sidemenu .places-container .remove-favorite-button:active {
+    background-color: #f36548;
+    color: white;
 }
 
 
 /* Info Window */
-
 .spot-info {
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
     font-family: 'Open Sans', sans-serif;
+    font-size: 1.1em;
 }
 
 .spot-info header {
-    margin: 8px 0;
+    margin: 0.5em 0;
     color: #f36548;
     font-size: 1.2em;
 }
 
+.spot-info .spot-image,
+.spot-info .spot-description {
+    max-width: 38em;
+}
+
 .spot-info .spot-image {
-    max-width: 400px;
-    border-radius: 10px;
+    width: 100%;
 }
 
 .spot-info p {
     width: 100%;
-    margin: 5px 0 12px;
+    margin: 0.4em 0 0.8em;
 }
 
 .spot-info .spot-description {
-    max-width: 38em;
+    text-align: justify;
     font-size: 1em;
-    margin: 0 0 15px;
+    margin: 0 0 1.4em;
 }
 
 .spot-info .label {
@@ -256,11 +364,51 @@ main {
     float: right;
 }
 
-.spot-info .spot-description {
-    text-align: justify;
-    margin: 0 0 10px;
-}
-
 .spot-info .spot-footer {
     align-self: flex-end;
+}
+
+
+/* Media Queries */
+@media screen and (max-width: 1200px) {
+    /* Side Menu */
+    .sidemenu {
+        font-size: 0.9em;
+    }
+
+
+    /* Info Window */
+    .spot-info {
+        font-size: 0.9em;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    /* Side Menu */
+    .sidemenu {
+        font-size: 0.8em;
+    }
+
+
+    /* Info Window */
+    .spot-info {
+        font-size: 0.85em;
+    }
+
+    .spot-info .spot-image,
+    .spot-info .spot-description {
+        max-width: 25em;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    /* Info Window */
+    .spot-info {
+        font-size: 0.8em;
+    }
+
+    .spot-info .spot-image,
+    .spot-info .spot-description {
+        max-width: 24em;
+    }
 }
