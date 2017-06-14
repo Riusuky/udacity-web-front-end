@@ -6,7 +6,7 @@ The page can be accessed [here](https://riusuky.github.io/udacity-web-front-end/
 
 ## Getting Started
 
-To properly deploy the project, please see the README file located at the project's root.
+To properly deploy the project, please see the [README](../README.md) file located at the project's root.
 
 ## APIs Used
 
