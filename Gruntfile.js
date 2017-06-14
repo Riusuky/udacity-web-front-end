@@ -143,17 +143,23 @@ module.exports = function(grunt) {
         },
 
         postcss: {
-          options: {
-              processors: [
-                  require("autoprefixer")
-              ]
-          },
-          portfolio: {
-            expand: true,
-            cwd: portfolioPath+"src/css/",
-            src: ["*.css", "!normalize.css"],
-            dest: portfolioPath+"css/"
-          }
+            options: {
+                processors: [
+                    require("autoprefixer")
+                ]
+            },
+            portfolio: {
+                expand: true,
+                cwd: portfolioPath+"src/css/",
+                src: ["*.css", "!normalize.css"],
+                dest: portfolioPath+"css/"
+            },
+            neighborhoodMap: {
+                expand: true,
+                cwd: neighborhoodMapPath+"src/css/",
+                src: ["*.css", "!normalize.min.css"],
+                dest: neighborhoodMapPath+"dist/css/"
+            }
         },
 
         cssmin: {
@@ -177,7 +183,7 @@ module.exports = function(grunt) {
             neighborhoodMap: {
                 files: [{
                     expand: true,
-                    cwd: neighborhoodMapPath+"src/css/",
+                    cwd: neighborhoodMapPath+"dist/css/",
                     src: ["*.css", "!**/*.min.css"],
                     dest: neighborhoodMapPath+"dist/css/"
                 }]
@@ -360,7 +366,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask("webOptimization", ["clean:webOptimization", "htmlmin:webOptimization", "cssmin:webOptimization", "uglify:webOptimization", "copy:webOptimizationImages", "responsive_images:webOptimization", "imagemin:webOptimization"]);
 
-    grunt.registerTask("neighborhoodMap", ["jshint:neighborhoodMap", "clean:neighborhoodMap", "htmlmin:neighborhoodMap", "cssmin:neighborhoodMap", "uglify:neighborhoodMap", "copy:neighborhoodMap", "imagemin:neighborhoodMap"]);
+    grunt.registerTask("neighborhoodMap", ["jshint:neighborhoodMap", "clean:neighborhoodMap", "htmlmin:neighborhoodMap", "postcss:neighborhoodMap", "cssmin:neighborhoodMap", "uglify:neighborhoodMap", "copy:neighborhoodMap", "imagemin:neighborhoodMap"]);
 
     grunt.registerTask("default", ["portfolio", "webOptimization", "neighborhoodMap"]);
 
