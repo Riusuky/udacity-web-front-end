@@ -147,7 +147,7 @@ var gameController = (function() {
         object.ctx = ctx;
 
         object.adjustMapSize();
-    }
+    };
 
     var currentScore = $('.current .value');
     var maxScore = $('.max .value');
