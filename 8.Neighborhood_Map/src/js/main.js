@@ -557,7 +557,9 @@
             * @method centerMap - It adjusts the map zoom and position to show all the enabled markers.
             */
             this.centerMap = function() {
-                mapInterface.extendBounds(self.spotList().filter(function(spot) { return spot.type.visible(); } ));
+                if(mapInterface.extendBounds) {
+                    mapInterface.extendBounds(self.spotList().filter(function(spot) { return spot.type.visible(); } ));
+                }
             };
 
             /**
