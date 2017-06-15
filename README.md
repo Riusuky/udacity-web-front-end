@@ -1,15 +1,20 @@
 # Udacity Web Front End (Still in progress!)
 
-This repository is meant to show all of my Udacity's Web Front End Nanodegree project submissions. All of its content can be viewed [here](https://riusuky.github.io/udacity-web-front-end/).
-
+This repository is meant to show all of my Udacity's Web Front End Nanodegree project submissions. All of its content can be viewed in [this](https://riusuky.github.io/udacity-web-front-end/) hosted version.
 
 ## Getting Started
 
-Since the project uses the task runner [Grunt](https://gruntjs.com) ([Gruntfile.js](Gruntfile.js)) to perform optimizations and process images, you need to install all of its dependencies ([package.json](package.json)).
+Since the project uses the task runner [Grunt](https://gruntjs.com) ([`Gruntfile.js`](Gruntfile.js)) to process images and perform optimizations, you need to install all of its dependencies ([`package.json`](package.json)).
 
-To install all dependencies just run `npm install` (Make sure you have npm installed before running it).
+Before installing the dependencies, make sure you have [Node.js](https://nodejs.org/en/), [npm](https://www.npmjs.com/), and [Grunt CLI](https://gruntjs.com/getting-started) installed.
 
-To run all tasks for all projects, just run `grunt`.
+To install all dependencies just run `npm install` where the `package.json` file is located.
+
+To run all Grunt tasks for all projects, just run `grunt` where the `Gruntfile.js` file is located.
+
+If you intend to host a project on a local server, you could use the [http-server](https://www.npmjs.com/package/http-server) package for simplicity.
+
+Each project may contain its own `README` file with its own **Getting Started** section for further instructions on how to make your adjustments/modification or simply open the project.
 
 ## License
 

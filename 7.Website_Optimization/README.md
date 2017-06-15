@@ -4,7 +4,11 @@ This project goal was to optimize some [given webpages](https://github.com/udaci
 
 ## Getting Started
 
-To properly deploy the project, please see the README file located at the project's root.
+To install all the project's dependencies, please see the [`README`](../README.md) file located at the repository's root first.
+
+To run the Grunt task associated with this project, run `grunt webOptimization` where the `Gruntfile.js` file is located. This will create/refresh the `dist` folder based on the `src` folder content. Thus, all your custom modification must be made at the `src` folder, otherwise, you'd lose your work.
+
+To open the project, simply use your preferred browser to open either the `dist/index.html` (Page load time) or the `dist/views/pizza.html` (Page at 60fps).
 
 ## Optimizations
 

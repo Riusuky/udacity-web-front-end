@@ -67,7 +67,7 @@ main,
 
 /* Main Content */
 body {
-    font-family: 'Open Sans', sans-serif;
+    font-family: "Open Sans", sans-serif;
 }
 
 main {
@@ -145,7 +145,7 @@ main {
 }
 
 .sidemenu .header {
-    font-family: 'Luckiest Guy', cursive;
+    font-family: "Luckiest Guy", cursive;
     font-weight: lighter;
     color: white;
     text-shadow: 0.1em 0.18em #2c2c2c;
@@ -321,7 +321,7 @@ main {
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
-    font-family: 'Open Sans', sans-serif;
+    font-family: "Open Sans", sans-serif;
     font-size: 1.1em;
 }
 

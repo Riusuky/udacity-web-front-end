@@ -10,12 +10,6 @@
         <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="css/normalize.min.css">
         <link rel="stylesheet" href="css/main.css">
-
-        <script defer src="js/knockout-3.4.2.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script async src="js/google-maps.js"></script>
-        <script async src="js/font.js"></script>
-        <script defer src="js/main.js"></script>
     </head>
     <body data-bind="event: { mousedown: onAppClick, touchdown: onAppClick }">
         <main>
@@ -73,5 +67,11 @@
             <button type="button" data-bind="click: selectSpotTab, css: { unselected: sideMenuIsVisible() && !spotTabSelected(), selected: sideMenuIsVisible() && spotTabSelected() }" class="list-toggler spot-tab ui-layout dark-red-background fa fa-bars"></button>
             <button type="button" data-bind="click: selectFavoriteTab, css: { unselected: sideMenuIsVisible() && spotTabSelected(), selected: sideMenuIsVisible() && !spotTabSelected() }" class="list-toggler favorite-tab ui-layout dark-red-background fa fa-star"></button>
         </aside>
+
+        <script src="js/knockout-3.4.2.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script async src="js/font.js"></script>
+        <script src="js/main.js"></script>
+        <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArDpqzXWGpRDL9uRgPYp6KNs-IS948vIA&callback=window.googleMapsOnSuccess" onerror="window.googleMapsOnError()"></script>
     </body>
 </html>

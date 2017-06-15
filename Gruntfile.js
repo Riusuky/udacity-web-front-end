@@ -5,6 +5,7 @@ var ngrok = require('ngrok');
 module.exports = function(grunt) {
 
     var portfolioPath = "4.Build_a_Portfolio_Site/";
+    var classicArcadeGameClonePath = "6.Classic_Arcade_Game_Clone";
     var webOptimizationPath = "7.Website_Optimization/";
     var neighborhoodMapPath = "8.Neighborhood_Map/";
 
@@ -329,6 +330,15 @@ module.exports = function(grunt) {
         jshint: {
             options: {
                 reporter: require('jshint-stylish')
+            },
+            classicArcadeGameClone: {
+                files: [
+                    {
+                        expand: true,
+                        src: ["**/*.js"],
+                        cwd: classicArcadeGameClonePath+"src/"
+                    }
+                ]
             },
             neighborhoodMap: {
                 files: [

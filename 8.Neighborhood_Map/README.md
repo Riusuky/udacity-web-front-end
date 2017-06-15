@@ -2,11 +2,15 @@
 
 This project consists of a single page app that shows cool spots of a town that I picked. The user can further add some cools spots that he found nearby the city.
 
-The page can be accessed [here](https://riusuky.github.io/udacity-web-front-end/8.Neighborhood_Map/dist/index.html).
+A hosted version of the App can be accessed [here](https://riusuky.github.io/udacity-web-front-end/8.Neighborhood_Map/dist/index.html).
 
 ## Getting Started
 
-To properly deploy the project, please see the [README](../README.md) file located at the project's root.
+To install all the project's dependencies, please see the [`README`](../README.md) file located at the repository's root first.
+
+To run the Grunt task associated with this project, run `grunt neighborhoodMap` where the `Gruntfile.js` file is located. This will create/refresh the `dist` folder based on the `src` folder content. Thus, all your custom modification must be made at the `src` folder, otherwise, you'd lose your work.
+
+To open the project, simply use your preferred browser to open the `dist/index.html` file.
 
 ## APIs Used
 
