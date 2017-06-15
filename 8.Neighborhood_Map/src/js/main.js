@@ -899,7 +899,7 @@
                     }, function() {
                         // I'd rather keep this message hidden from the user. But, since it is a requirement, I'll just show it as a window.alert...
                         if(searchValue.length > lastInvalidSearchValue.length) {
-                            window.alert('Could not find any spot that begins with: '+searchValue+'.')
+                            window.alert('Could not find any spot that begins with: '+searchValue+'.');
                         }
 
                         lastInvalidSearchValue = searchValue;
