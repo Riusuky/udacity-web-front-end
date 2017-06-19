@@ -4,7 +4,7 @@ The objective of this project was to write test suites (using [Jasmine](https://
 
 The proposed implementation of test suites are located at the file [`feedreader.js`](jasmine\spec\feedreader.js).
 
-A hosted version of the page that run the tests can be accessed [here](https://riusuky.github.io/udacity-web-front-end/9.Feed_Reader_Testing/index.html).
+A hosted version of the page that run the tests can be accessed [here](https://riusuky.github.io/udacity-web-front-end/9.Feed_Reader_Testing/fixedindex.html).
 
 ## Getting Started
 
