@@ -2,7 +2,7 @@
 
 The objective of this project was to write test suites (using [Jasmine](https://jasmine.github.io/)) for a existing [project](https://github.com/udacity/frontend-nanodegree-feedreader).
 
-The proposed implementation were performed at the files [`feedreader.js`](jasmine\spec\feedreader.js) and [`app.js`](js\app.js).
+The proposed implementation of test suites are located at the file [`feedreader.js`](jasmine\spec\feedreader.js).
 
 A hosted version of the page that run the tests can be accessed [here](https://riusuky.github.io/udacity-web-front-end/9.Feed_Reader_Testing/index.html).
 
