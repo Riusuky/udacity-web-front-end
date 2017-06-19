@@ -1,5 +1,3 @@
-'user strict';
-
 /* app.js
  *
  * This is our RSS feed reader application. It uses the Google
@@ -43,30 +41,6 @@ function init() {
  * which will be called after everything has run successfully.
  */
  function loadFeed(id, cb) {
-     if( (id < 0) || (id >= allFeeds.length) ) {
-         window.alert('Cannot load feed by an unknown ID.');
-
-         if (cb) {
-             cb();
-         }
-
-         return;
-     }
-
-     if(!allFeeds[id].url) {
-         window.alert('Cannot load feed without a url set.');
-
-         if (cb) {
-             cb();
-         }
-
-         return;
-     }
-
-     if(!allFeeds[id].name) {
-         window.alert('Feed being loaded does not have a name set. Name will be set to "Unknown name"');
-     }
-
      var feedUrl = allFeeds[id].url,
          feedName = allFeeds[id].name;
 
@@ -80,9 +54,10 @@ function init() {
                  var container = $('.feed'),
                      title = $('.header-title'),
                      entries = result.feed.entries,
+                     entriesLen = entries.length,
                      entryTemplate = Handlebars.compile($('.tpl-entry').html());
 
-                 title.html(feedName || 'Unknown name');   // Set the header text
+                 title.html(feedName);   // Set the header text
                  container.empty();      // Empty out all previous entries
 
                  /* Loop through the entries we just loaded via the Google
@@ -118,7 +93,8 @@ google.setOnLoadCallback(init);
  * until the DOM is ready.
  */
 $(function() {
-    var feedList = $('.feed-list'),
+    var container = $('.feed'),
+        feedList = $('.feed-list'),
         feedItemTemplate = Handlebars.compile($('.tpl-feed-list-item').html()),
         feedId = 0,
         menuIcon = $('.menu-icon-link');
