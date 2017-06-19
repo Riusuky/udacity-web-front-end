@@ -20,4 +20,4 @@ Each project may contain its own `README` file with its own **Getting Started** 
 
 All code content of this repository are covered under the [MIT License](https://opensource.org/licenses/MIT). Copyright © 2017 Gabriel Tamashiro.
 
-For [project 6 (Classic Arcade Game Clone)](/6.Classic_Arcade_Game_Clone) and [project 7 (Web Optimization)](/7.Website_Optimization) please see their respective README for more information.
+For [project 6 (Classic Arcade Game Clone)](/6.Classic_Arcade_Game_Clone), [project 7 (Web Optimization)](/7.Website_Optimization) and [project 9 (Feed Reader Testing)](/9.Feed_Reader_Testing) please see their respective README files for more information.
