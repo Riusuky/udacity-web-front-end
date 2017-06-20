@@ -141,7 +141,7 @@ $(function() {
                 else if(endCallback){
                     endCallback();
                 }
-            })
+            });
         }
 
         it('content changes for each feed selection', function(done) {
