@@ -76,14 +76,12 @@ $(function() {
         * should have two expectations: does the menu display when
         * clicked and does it hide when clicked again.
         */
-        it('toggles visibility when the menu button is clicked', function() {
-            var initialState = body.hasClass('menu-hidden');
+        it('turns visible on first menu click and hidden again on second', function() {
+            menuButton.trigger( "click" );
+            expect(body.hasClass('menu-hidden')).toBe(false);
 
             menuButton.trigger( "click" );
-            expect(body.hasClass('menu-hidden')).toBe(!initialState);
-
-            menuButton.trigger( "click" );
-            expect(body.hasClass('menu-hidden')).toBe(initialState);
+            expect(body.hasClass('menu-hidden')).toBe(true);
         });
     });
 
@@ -102,38 +100,79 @@ $(function() {
             loadFeed(0, done);
         });
 
-        it('has at least one entry', function(done) {
+        it('has at least one entry', function() {
             var entries = container.find('.entry');
 
             expect(entries.length).toBeGreaterThan(0);
-
-            done();
         });
     });
 
     /* TODO: Write a new test suite named "New Feed Selection" */
     describe('New Feed Selection', function() {
-        var container = $('.feed');
         var headerTitle = $('.header-title');
+        var container = $('.feed');
+
+        var feedSelectionIndexes = $('.feed-list a[data-id]').map(function() { return $(this).data('id'); });
 
         /* TODO: Write a test that ensures when a new feed is loaded
         * by the loadFeed function that the content actually changes.
         * Remember, loadFeed() is asynchronous.
         */
+        // I'm just setting a flexible timeout so it has time to fetch the data for each entry.
+        jasmine.DEFAULT_TIMEOUT_INTERVAL *= 2.5*(feedSelectionIndexes.length + 1);
 
-        beforeEach(function(done) {
-            // Cleans content
-            container.empty();
-            headerTitle.empty();
+        /**
+        * This function will call `loadFeed` for each `selectionArray` entry.
+        * After each `loadFeed` is completed, the `iterationCallback` is called.
+        * At the end of all `loadfeed` calls or if `iterationCallback` returns false, `endCallback` is called.
+        */
+        function interateSelections(selectionArray, currentIndex, iterationCallback, endCallback) {
+            loadFeed(selectionArray[currentIndex], function() {
+                if(iterationCallback && iterationCallback()) {
+                    ++currentIndex;
 
-            loadFeed(0, done);
-        });
+                    if(currentIndex < selectionArray.length) {
+                        interateSelections(selectionArray, currentIndex, iterationCallback, endCallback);
+                    }
+                    else if(endCallback) {
+                        endCallback();
+                    }
+                }
+                else if(endCallback){
+                    endCallback();
+                }
+            })
+        }
 
-        it('updates content', function(done) {
-            expect(container.html()).not.toBe('');
-            expect(headerTitle.html()).not.toBe('');
+        it('content changes for each feed selection', function(done) {
+            /**
+            * Even thought there is a spec that checks the array related to the feed selections,
+            * the line below will check that that array got properly converted into the actual links.
+            */
+            expect(feedSelectionIndexes.length).toBeGreaterThan(0);
 
-            done();
+            if(feedSelectionIndexes.length > 0) {
+                var currentFeedContent, currentFeedHeader;
+
+                interateSelections(feedSelectionIndexes, 0, function() {
+                    var canContinue = true;
+                    // The fisr feed load will initialize the `currentFeedContent` and `currentFeedHeader` variables.
+                    if( currentFeedHeader && currentFeedContent ) {
+                        var newHeader = headerTitle.html();
+                        var newContent = container.html();
+
+                        expect(currentFeedHeader).not.toEqual(newHeader);
+                        expect(currentFeedContent).not.toEqual(newContent);
+
+                        canContinue = (currentFeedHeader != newHeader) && (currentFeedContent != newContent);
+                    }
+
+                    currentFeedHeader = headerTitle.html();
+                    currentFeedContent = container.html();
+
+                    return canContinue;
+                }, done);
+            }
         });
     });
 }());
