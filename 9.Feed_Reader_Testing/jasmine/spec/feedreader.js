@@ -88,7 +88,6 @@ $(function() {
 
     /* TODO: Write a new test suite named "Initial Entries" */
     describe('Initial Entries', function() {
-        var container = $('.feed');
 
         /* TODO: Write a test that ensures when the loadFeed
         * function is called and completes its work, there is at least
@@ -101,7 +100,7 @@ $(function() {
         });
 
         it('has at least one entry', function() {
-            var entries = container.find('.entry');
+            var entries = $('.feed .entry');
 
             expect(entries.length).toBeGreaterThan(0);
         });
@@ -125,6 +124,10 @@ $(function() {
         * This function will call `loadFeed` for each `selectionArray` entry.
         * After each `loadFeed` is completed, the `iterationCallback` is called.
         * At the end of all `loadfeed` calls or if `iterationCallback` returns false, `endCallback` is called.
+        *
+        * I put some extra effort to make the spec check if all the feed selections would
+        * actually change the content when changing selection. This way, if someone duplicated
+        * one of the selections URLs, this spec would fail.
         */
         function interateSelections(selectionArray, currentIndex, iterationCallback, endCallback) {
             loadFeed(selectionArray[currentIndex], function() {
